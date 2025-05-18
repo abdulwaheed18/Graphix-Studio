@@ -194,6 +194,9 @@
                 <button id="zoomOutButton" title="Zoom Out" class="p-2 text-gray-500 hover:text-indigo-600 disabled:text-gray-300 focus:outline-none"><i class="fas fa-search-minus"></i></button>
                 <button id="zoomResetButton" title="Reset Zoom" class="p-2 text-gray-500 hover:text-indigo-600 disabled:text-gray-300 focus:outline-none"><i class="fas fa-search"></i></button>
                 <button id="zoomInButton" title="Zoom In" class="p-2 text-gray-500 hover:text-indigo-600 disabled:text-gray-300 focus:outline-none"><i class="fas fa-search-plus"></i></button>
+                <button id="copyImageButton" title="Copy Image to Clipboard" class="p-2 text-gray-500 hover:text-indigo-600 disabled:text-gray-300 focus:outline-none" disabled>
+                    <i class="fas fa-clipboard"></i>
+                </button>
             </div>
         </div>
         <div id="loadingIndicator">Rendering Diagram...</div>
@@ -258,7 +261,7 @@
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.3.0", // Example version
+            version: "1.3.1", // Example version incremented
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "https://example.com/support",
             supportEmail: "support@graphix.studio.example.com",
@@ -345,7 +348,9 @@
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomResetButton = document.getElementById('zoomResetButton');
+        const copyImageButton = document.getElementById('copyImageButton'); // <-- Added this line
         const notificationToast = document.getElementById('notificationToast');
+
 
         // --- Initialize CodeMirror ---
         const codeEditor = CodeMirror.fromTextArea(document.getElementById('mermaidInput'), {
@@ -530,6 +535,7 @@
             else if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.disabled = true;
             if (downloadSvgWithCodeButton) downloadSvgWithCodeButton.disabled = !enable;
             if (exportButton) exportButton.disabled = !enable;
+            if (copyImageButton) copyImageButton.disabled = !enable; // <-- Added this line
         }
         updateDownloadButtonsState(false);
 
@@ -776,6 +782,88 @@
             }
             if (exportDropdown) exportDropdown.style.display = 'none';
         });
+
+        // --- Start: Copy Image to Clipboard Functionality ---
+        async function getPngBlobFromDiagram() {
+            const svgData = getSvgElementForDownload(); // Reuses your existing SVG preparation logic
+            if (!svgData) {
+                // Notification already shown by getSvgElementForDownload
+                return null;
+            }
+
+            const { element: svgElement, width, height } = svgData;
+            const svgXml = new XMLSerializer().serializeToString(svgElement);
+            const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXml);
+
+            const img = new Image();
+            return new Promise((resolve) => {
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    // Using a scaleFactor can improve quality, similar to downloads
+                    const scaleFactor = 2;
+                    canvas.width = width * scaleFactor;
+                    canvas.height = height * scaleFactor;
+                    const ctx = canvas.getContext('2d');
+
+                    // Ensure background is white for copied image (as SVGs can have transparent bg)
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    canvas.toBlob(blob => {
+                        resolve(blob);
+                    }, 'image/png');
+                };
+                img.onerror = (e) => {
+                    console.error("Error loading SVG into image for copying:", e);
+                    showNotification(`Error preparing image for copying.`, 4000);
+                    resolve(null);
+                };
+                img.src = svgDataUrl;
+            });
+        }
+
+        if (copyImageButton) {
+            copyImageButton.addEventListener('click', async () => {
+                if (!navigator.clipboard || !navigator.clipboard.write) {
+                    showNotification("Clipboard API for writing images is not supported by your browser.", 4000);
+                    return;
+                }
+
+                // Show a generic processing indicator
+                let originalIndicatorText = "Preparing Download..."; // Default
+                if (downloadingIndicator) {
+                    originalIndicatorText = downloadingIndicator.textContent;
+                    downloadingIndicator.textContent = "Preparing Image...";
+                    downloadingIndicator.style.display = 'block';
+                }
+
+                const pngBlob = await getPngBlobFromDiagram();
+
+                if (downloadingIndicator) {
+                    downloadingIndicator.style.display = 'none';
+                    downloadingIndicator.textContent = originalIndicatorText; // Reset to original
+                }
+
+                if (pngBlob) {
+                    try {
+                        await navigator.clipboard.write([
+                            new ClipboardItem({
+                                'image/png': pngBlob
+                            })
+                        ]);
+                        showNotification("Diagram image copied to clipboard!");
+                    } catch (error) {
+                        console.error('Failed to copy image to clipboard:', error);
+                        showNotification("Failed to copy image. Your browser might not allow it or an error occurred. See console for details.", 5000);
+                    }
+                } else {
+                    // Notification handled by getPngBlobFromDiagram or getSvgElementForDownload if svgData was null
+                }
+            });
+        }
+        // --- End: Copy Image to Clipboard Functionality ---
+
 
         if (renderButton) renderButton.addEventListener('click', () => renderDiagram(false));
 
