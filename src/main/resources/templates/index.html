@@ -197,6 +197,9 @@
                 <button id="copyImageButton" title="Copy Image to Clipboard" class="p-2 text-gray-500 hover:text-indigo-600 disabled:text-gray-300 focus:outline-none" disabled>
                     <i class="fas fa-clipboard"></i>
                 </button>
+                <button id="fullscreenButton" title="Enter Fullscreen" class="p-2 text-gray-500 hover:text-indigo-600 focus:outline-none">
+                    <i class="fas fa-expand"></i>
+                </button>
             </div>
         </div>
         <div id="loadingIndicator">Rendering Diagram...</div>
@@ -261,7 +264,7 @@
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.3.1", // Example version incremented
+            version: "1.3.2", // Example version incremented
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "https://example.com/support",
             supportEmail: "support@graphix.studio.example.com",
@@ -348,8 +351,13 @@
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomResetButton = document.getElementById('zoomResetButton');
-        const copyImageButton = document.getElementById('copyImageButton'); // <-- Added this line
+        const copyImageButton = document.getElementById('copyImageButton');
+        const fullscreenButton = document.getElementById('fullscreenButton'); // <-- Added this line
         const notificationToast = document.getElementById('notificationToast');
+
+        const leftPanel = document.getElementById('leftPanel');
+        const rightPanel = document.getElementById('rightPanel'); // <-- Referenced for fullscreen
+        const resizer = document.getElementById('resizer');
 
 
         // --- Initialize CodeMirror ---
@@ -535,7 +543,7 @@
             else if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.disabled = true;
             if (downloadSvgWithCodeButton) downloadSvgWithCodeButton.disabled = !enable;
             if (exportButton) exportButton.disabled = !enable;
-            if (copyImageButton) copyImageButton.disabled = !enable; // <-- Added this line
+            if (copyImageButton) copyImageButton.disabled = !enable;
         }
         updateDownloadButtonsState(false);
 
@@ -864,6 +872,36 @@
         }
         // --- End: Copy Image to Clipboard Functionality ---
 
+        // --- Start: Fullscreen Functionality ---
+        if (fullscreenButton && rightPanel) {
+            fullscreenButton.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    rightPanel.requestFullscreen().catch(err => {
+                        showNotification(`Error enabling full-screen: ${err.message}`, 4000);
+                        console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    });
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                }
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                const icon = fullscreenButton.querySelector('i');
+                if (document.fullscreenElement === rightPanel) {
+                    fullscreenButton.title = "Exit Fullscreen";
+                    icon.classList.remove('fa-expand');
+                    icon.classList.add('fa-compress');
+                } else {
+                    fullscreenButton.title = "Enter Fullscreen";
+                    icon.classList.remove('fa-compress');
+                    icon.classList.add('fa-expand');
+                }
+            });
+        }
+        // --- End: Fullscreen Functionality ---
+
 
         if (renderButton) renderButton.addEventListener('click', () => renderDiagram(false));
 
@@ -920,7 +958,7 @@
             if (leftPanel && rightPanel && resizer && leftPanel.parentElement) { const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth || 8; const availableWidthForPanels = Math.max(0, mainContentTotalWidth - resizerWidth); const totalFraction = panelWidthsFractions.left + panelWidthsFractions.right; let leftFraction = panelWidthsFractions.left; let rightFraction = panelWidthsFractions.right; if (totalFraction > 0 && Math.abs(totalFraction - 1.0) > 0.01) { leftFraction = panelWidthsFractions.left / totalFraction; rightFraction = panelWidthsFractions.right / totalFraction; } leftPanel.style.flexBasis = `${Math.max(0, availableWidthForPanels * leftFraction)}px`; rightPanel.style.flexBasis = `${Math.max(0, availableWidthForPanels * rightFraction)}px`; }
         }
         if (resizer && leftPanel && rightPanel) {
-             resizer.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; document.body.style.userSelect = 'none'; document.body.style.cursor = 'col-resize'; if(leftPanel) leftPanel.style.pointerEvents = 'none'; if(rightPanel) rightPanel.style.pointerEvents = 'none'; const startX = e.clientX; const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth; const availableWidthForPanels = mainContentTotalWidth - resizerWidth; const initialLeftFlexBasisInPx = parseFloat(leftPanel.style.flexBasis) || (availableWidthForPanels * panelWidthsFractions.left); const onMouseMove = (moveEvent) => { if (!isResizing) return; const dx = moveEvent.clientX - startX; let newLeftWidthInPx = initialLeftFlexBasisInPx + dx; const minPanelWidthInPx = 150; newLeftWidthInPx = Math.max(minPanelWidthInPx, newLeftWidthInPx); newLeftWidthInPx = Math.min(availableWidthForPanels - minPanelWidthInPx, newLeftWidthInPx); if (availableWidthForPanels > 0) { panelWidthsFractions.left = newLeftWidthInPx / availableWidthForPanels; panelWidthsFractions.right = 1.0 - panelWidthsFractions.left; } applyPanelWidths(); }; const onMouseUp = () => { if (!isResizing) return; isResizing = false; document.body.style.userSelect = ''; document.body.style.cursor = ''; if(leftPanel) leftPanel.style.pointerEvents = ''; if(rightPanel) rightPanel.style.pointerEvents = ''; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); savePanelWidths(); }; document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp); });
+             resizer.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; document.body.style.userSelect = 'none'; document.body.style.cursor = 'col-resize'; if(leftPanel) leftPanel.style.pointerEvents = 'none'; if(rightPanel) rightPanel.style.pointerEvents = 'none'; const startX = e.clientX; const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth; const availableWidthForPanels = mainContentTotalWidth - resizerWidth; const initialLeftFlexBasisInPx = parseFloat(leftPanel.style.flexBasis) || (availableWidthForPanels * panelWidthsFractions.left); const onMouseMove = (moveEvent) => { if (!isResizing) return; const dx = moveEvent.clientX - startX; let newLeftWidthInPx = initialLeftFlexBasisInPx + dx; const minPanelWidthInPx = 150; newLeftWidthInPx = Math.max(minPanelWidthInPx, newLeftWidthInPx); newLeftWidthInPx = Math.min(availableWidthForPanels - minPanelWidthInPx, newLeftWidthInPx); if (availableWidthForPanels > 0) { panelWidthsFractions.left = newLeftWidthInPx / availableWidthForPans; panelWidthsFractions.right = 1.0 - panelWidthsFractions.left; } applyPanelWidths(); }; const onMouseUp = () => { if (!isResizing) return; isResizing = false; document.body.style.userSelect = ''; document.body.style.cursor = ''; if(leftPanel) leftPanel.style.pointerEvents = ''; if(rightPanel) rightPanel.style.pointerEvents = ''; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); savePanelWidths(); }; document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp); });
         }
         loadPanelWidths();
         window.addEventListener('resize', () => { applyPanelWidths(); });
