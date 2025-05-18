@@ -352,33 +352,27 @@
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomResetButton = document.getElementById('zoomResetButton');
         const copyImageButton = document.getElementById('copyImageButton');
-        const fullscreenButton = document.getElementById('fullscreenButton'); // <-- Added this line
+        const fullscreenButton = document.getElementById('fullscreenButton');
         const notificationToast = document.getElementById('notificationToast');
 
         const leftPanel = document.getElementById('leftPanel');
-        const rightPanel = document.getElementById('rightPanel'); // <-- Referenced for fullscreen
+        const rightPanel = document.getElementById('rightPanel');
         const resizer = document.getElementById('resizer');
 
 
         // --- Initialize CodeMirror ---
         const codeEditor = CodeMirror.fromTextArea(document.getElementById('mermaidInput'), {
             lineNumbers: true,
-            mode: "markdown", // Using markdown mode for some basic highlighting. A custom Mermaid mode would be better.
-            theme: "material-darker", // Match with included theme CSS or choose another
+            mode: "markdown",
+            theme: "material-darker",
             lineWrapping: true,
-            // autoCloseBrackets: true, // Addon needed
-            // matchBrackets: true, // Addon needed
         });
-        // Set initial value for CodeMirror from APP_CONFIG
         let initialCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
         codeEditor.setValue(initialCode);
 
-        // Adjust CodeMirror height to fit its container (flex-grow behavior)
-        // The .CodeMirror div is created by the library.
-         setTimeout(() => { // Ensure CodeMirror has initialized
+         setTimeout(() => {
             const cmElement = document.querySelector('.CodeMirror');
             if (cmElement && cmElement.parentElement.id === 'editorContainer') {
-                // The parent 'editorContainer' has flex-grow. CodeMirror itself needs to fill it.
                 cmElement.style.height = '100%';
             }
         }, 100);
@@ -422,7 +416,7 @@
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
 
         function updateDefaultMermaidCodePlaceholder() {
-             if (codeEditor) { // Use codeEditor instance
+             if (codeEditor) {
                 let themeNameForDefaultText = currentMermaidTheme;
                 if (currentMermaidTheme === 'custom') { themeNameForDefaultText = `Custom (${currentCustomColor})`;}
                 const currentEditorValue = codeEditor.getValue();
@@ -434,7 +428,6 @@
                 }
             }
         }
-        // updateDefaultMermaidCodePlaceholder(); // Called after CodeMirror init
         if (customColorInput) customColorInput.value = currentCustomColor;
         initializeMermaid(currentMermaidTheme, currentCustomColor);
 
@@ -628,7 +621,7 @@
         }
 
         function downloadCurrentDiagramCode(baseFileName) {
-            let code = codeEditor.getValue(); // Get code from CodeMirror
+            let code = codeEditor.getValue();
             if (!code.trim()) {
                 showNotification("Nothing to download. Editor is empty.", 3000);
                 return false;
@@ -673,7 +666,7 @@
                         let importedCode = e.target.result;
                         const commentRegex = /^%% This code was created via Graphix Studio.*\n%% Timestamp: .*\n\n/m;
                         importedCode = importedCode.replace(commentRegex, '');
-                        codeEditor.setValue(importedCode); // Set value in CodeMirror
+                        codeEditor.setValue(importedCode);
                         renderDiagram();
                         showNotification(`Diagram "${file.name}" imported successfully!`);
                     };
@@ -692,12 +685,26 @@
             const viewBox = svgElement.viewBox.baseVal;
             let originalWidth = svgElement.width.baseVal ? svgElement.width.baseVal.value : 0;
             let originalHeight = svgElement.height.baseVal ? svgElement.height.baseVal.value : 0;
-            if ((!originalWidth || !originalHeight || originalWidth === 0 || originalHeight === 0) && viewBox && viewBox.width && viewBox.height) { originalWidth = viewBox.width; originalHeight = viewBox.height; }
-            if (!originalWidth || !originalHeight || originalWidth === 0 || originalHeight === 0) { const clientRect = svgElement.getBoundingClientRect(); originalWidth = clientRect.width || 800; originalHeight = clientRect.height || 600; }
-            clonedSvgElement.setAttribute('width', originalWidth); clonedSvgElement.setAttribute('height', originalHeight);
-            const styleEl = document.createElement('style');
-            styleEl.innerHTML = `svg { background-color: white !important; } text, .messageText, .actorInternal, .labelText, .noteText, .loopText, .sequenceNumber, tspan, .edgeLabel { fill: #000000 !important; stroke: none !important; color: black !important; } .actor path, .participant path, .note rect, .loopLine, .messageLine0, .messageLine1, .edgePath path, line, polyline, path { stroke: #000000 !important; } .cluster rect, .cluster path, rect[rx]:not(.note), rect[ry]:not(.note) { fill: #f0f0f0 !important; stroke: #000000 !important; } .note rect { fill: #FFFFE0 !important; stroke: #A0A0A0 !important; }`;
-            clonedSvgElement.prepend(styleEl);
+
+            if ((!originalWidth || !originalHeight || originalWidth === 0 || originalHeight === 0) && viewBox && viewBox.width && viewBox.height) {
+                originalWidth = viewBox.width;
+                originalHeight = viewBox.height;
+            }
+            if (!originalWidth || !originalHeight || originalWidth === 0 || originalHeight === 0) {
+                const clientRect = svgElement.getBoundingClientRect();
+                originalWidth = clientRect.width || 800;
+                originalHeight = clientRect.height || 600;
+            }
+
+            clonedSvgElement.setAttribute('width', String(originalWidth));
+            clonedSvgElement.setAttribute('height', String(originalHeight));
+
+            // ---- THE FIX: Removed the style override that was causing theme issues on export ----
+            // const styleEl = document.createElement('style');
+            // styleEl.innerHTML = `svg { background-color: white !important; } text, .messageText, .actorInternal, .labelText, .noteText, .loopText, .sequenceNumber, tspan, .edgeLabel { fill: #000000 !important; stroke: none !important; color: black !important; } .actor path, .participant path, .note rect, .loopLine, .messageLine0, .messageLine1, .edgePath path, line, polyline, path { stroke: #000000 !important; } .cluster rect, .cluster path, rect[rx]:not(.note), rect[ry]:not(.note) { fill: #f0f0f0 !important; stroke: #000000 !important; } .note rect { fill: #FFFFE0 !important; stroke: #A0A0A0 !important; }`;
+            // clonedSvgElement.prepend(styleEl);
+            // ---- END OF FIX ----
+
             return { element: clonedSvgElement, width: originalWidth, height: originalHeight };
         }
 
@@ -793,30 +800,23 @@
 
         // --- Start: Copy Image to Clipboard Functionality ---
         async function getPngBlobFromDiagram() {
-            const svgData = getSvgElementForDownload(); // Reuses your existing SVG preparation logic
+            const svgData = getSvgElementForDownload();
             if (!svgData) {
-                // Notification already shown by getSvgElementForDownload
                 return null;
             }
-
             const { element: svgElement, width, height } = svgData;
             const svgXml = new XMLSerializer().serializeToString(svgElement);
             const svgDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgXml);
-
             const img = new Image();
             return new Promise((resolve) => {
                 img.onload = () => {
                     const canvas = document.createElement('canvas');
-                    // Using a scaleFactor can improve quality, similar to downloads
                     const scaleFactor = 2;
                     canvas.width = width * scaleFactor;
                     canvas.height = height * scaleFactor;
                     const ctx = canvas.getContext('2d');
-
-                    // Ensure background is white for copied image (as SVGs can have transparent bg)
                     ctx.fillStyle = 'white';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     canvas.toBlob(blob => {
                         resolve(blob);
@@ -837,22 +837,17 @@
                     showNotification("Clipboard API for writing images is not supported by your browser.", 4000);
                     return;
                 }
-
-                // Show a generic processing indicator
-                let originalIndicatorText = "Preparing Download..."; // Default
+                let originalIndicatorText = "Preparing Download...";
                 if (downloadingIndicator) {
                     originalIndicatorText = downloadingIndicator.textContent;
                     downloadingIndicator.textContent = "Preparing Image...";
                     downloadingIndicator.style.display = 'block';
                 }
-
                 const pngBlob = await getPngBlobFromDiagram();
-
                 if (downloadingIndicator) {
                     downloadingIndicator.style.display = 'none';
-                    downloadingIndicator.textContent = originalIndicatorText; // Reset to original
+                    downloadingIndicator.textContent = originalIndicatorText;
                 }
-
                 if (pngBlob) {
                     try {
                         await navigator.clipboard.write([
@@ -865,8 +860,6 @@
                         console.error('Failed to copy image to clipboard:', error);
                         showNotification("Failed to copy image. Your browser might not allow it or an error occurred. See console for details.", 5000);
                     }
-                } else {
-                    // Notification handled by getPngBlobFromDiagram or getSvgElementForDownload if svgData was null
                 }
             });
         }
@@ -886,7 +879,6 @@
                     }
                 }
             });
-
             document.addEventListener('fullscreenchange', () => {
                 const icon = fullscreenButton.querySelector('i');
                 if (document.fullscreenElement === rightPanel) {
@@ -902,11 +894,10 @@
         }
         // --- End: Fullscreen Functionality ---
 
-
         if (renderButton) renderButton.addEventListener('click', () => renderDiagram(false));
 
-        if (codeEditor) { // Use codeEditor instance
-            codeEditor.on('change', () => { // CodeMirror's change event
+        if (codeEditor) {
+            codeEditor.on('change', () => {
                 codeChangedSinceLastRender = true;
             });
              codeEditor.on('keydown', (cm, e) => {
@@ -958,7 +949,7 @@
             if (leftPanel && rightPanel && resizer && leftPanel.parentElement) { const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth || 8; const availableWidthForPanels = Math.max(0, mainContentTotalWidth - resizerWidth); const totalFraction = panelWidthsFractions.left + panelWidthsFractions.right; let leftFraction = panelWidthsFractions.left; let rightFraction = panelWidthsFractions.right; if (totalFraction > 0 && Math.abs(totalFraction - 1.0) > 0.01) { leftFraction = panelWidthsFractions.left / totalFraction; rightFraction = panelWidthsFractions.right / totalFraction; } leftPanel.style.flexBasis = `${Math.max(0, availableWidthForPanels * leftFraction)}px`; rightPanel.style.flexBasis = `${Math.max(0, availableWidthForPanels * rightFraction)}px`; }
         }
         if (resizer && leftPanel && rightPanel) {
-             resizer.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; document.body.style.userSelect = 'none'; document.body.style.cursor = 'col-resize'; if(leftPanel) leftPanel.style.pointerEvents = 'none'; if(rightPanel) rightPanel.style.pointerEvents = 'none'; const startX = e.clientX; const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth; const availableWidthForPanels = mainContentTotalWidth - resizerWidth; const initialLeftFlexBasisInPx = parseFloat(leftPanel.style.flexBasis) || (availableWidthForPanels * panelWidthsFractions.left); const onMouseMove = (moveEvent) => { if (!isResizing) return; const dx = moveEvent.clientX - startX; let newLeftWidthInPx = initialLeftFlexBasisInPx + dx; const minPanelWidthInPx = 150; newLeftWidthInPx = Math.max(minPanelWidthInPx, newLeftWidthInPx); newLeftWidthInPx = Math.min(availableWidthForPanels - minPanelWidthInPx, newLeftWidthInPx); if (availableWidthForPanels > 0) { panelWidthsFractions.left = newLeftWidthInPx / availableWidthForPans; panelWidthsFractions.right = 1.0 - panelWidthsFractions.left; } applyPanelWidths(); }; const onMouseUp = () => { if (!isResizing) return; isResizing = false; document.body.style.userSelect = ''; document.body.style.cursor = ''; if(leftPanel) leftPanel.style.pointerEvents = ''; if(rightPanel) rightPanel.style.pointerEvents = ''; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); savePanelWidths(); }; document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp); });
+             resizer.addEventListener('mousedown', (e) => { e.preventDefault(); isResizing = true; document.body.style.userSelect = 'none'; document.body.style.cursor = 'col-resize'; if(leftPanel) leftPanel.style.pointerEvents = 'none'; if(rightPanel) rightPanel.style.pointerEvents = 'none'; const startX = e.clientX; const mainContentTotalWidth = leftPanel.parentElement.clientWidth; const resizerWidth = resizer.offsetWidth; const availableWidthForPanels = mainContentTotalWidth - resizerWidth; const initialLeftFlexBasisInPx = parseFloat(leftPanel.style.flexBasis) || (availableWidthForPanels * panelWidthsFractions.left); const onMouseMove = (moveEvent) => { if (!isResizing) return; const dx = moveEvent.clientX - startX; let newLeftWidthInPx = initialLeftFlexBasisInPx + dx; const minPanelWidthInPx = 150; newLeftWidthInPx = Math.max(minPanelWidthInPx, newLeftWidthInPx); newLeftWidthInPx = Math.min(availableWidthForPanels - minPanelWidthInPx, newLeftWidthInPx); if (availableWidthForPanels > 0) { panelWidthsFractions.left = newLeftWidthInPx / availableWidthForPanels; panelWidthsFractions.right = 1.0 - panelWidthsFractions.left; } applyPanelWidths(); }; const onMouseUp = () => { if (!isResizing) return; isResizing = false; document.body.style.userSelect = ''; document.body.style.cursor = ''; if(leftPanel) leftPanel.style.pointerEvents = ''; if(rightPanel) rightPanel.style.pointerEvents = ''; document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp); savePanelWidths(); }; document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp); });
         }
         loadPanelWidths();
         window.addEventListener('resize', () => { applyPanelWidths(); });
