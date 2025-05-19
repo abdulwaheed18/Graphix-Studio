@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphix Studio - Online Diagram Editor</title>
+    <title>Diagram Craft - Online Diagram Editor</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -136,10 +136,10 @@
                     <button id="downloadDiagramCodeButton" class="dropdown-item"><i class="fas fa-file-code mr-2"></i> Download Code (.graphix)</button>
                     <div class="dropdown-divider"></div>
                     <button id="showHelpButton" class="dropdown-item"><i class="fas fa-question-circle mr-2"></i> Syntax & Examples</button>
-                    <button id="showAboutButton" class="dropdown-item"><i class="fas fa-info-circle mr-2"></i> About Graphix Studio</button>
+                    <button id="showAboutButton" class="dropdown-item"><i class="fas fa-info-circle mr-2"></i> About Diagram Craft</button>
                 </div>
             </div>
-            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Graphix Studio</h1>
+            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Diagram Craft</h1>
         </div>
 
         <div class="flex items-center space-x-2">
@@ -218,7 +218,7 @@
 </main>
 
 <footer class="bg-gray-800 text-white text-center p-3 text-sm mt-auto flex-shrink-0">
-    <p>&copy; <span id="currentYear"></span> Graphix Studio. Advanced Diagramming Solutions.</p>
+    <p>&copy; <span id="currentYear"></span> Diagram Craft. Advanced Diagramming Solutions.</p>
 </footer>
 
 <div id="helpModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden">
@@ -244,7 +244,7 @@
 <div id="aboutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden">
     <div class="bg-white p-5 md:p-8 rounded-lg shadow-xl w-11/12 md:max-w-lg max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 id="aboutModalTitle" class="text-xl font-semibold text-gray-800">About Graphix Studio</h3>
+            <h3 id="aboutModalTitle" class="text-xl font-semibold text-gray-800">About GDiagram Craft</h3>
             <button id="closeAboutModal" class="text-gray-600 hover:text-gray-900 text-2xl" aria-label="Close about modal">&times;</button>
         </div>
         <div class="about-content text-sm text-gray-700 space-y-3">
@@ -270,14 +270,14 @@
     document.addEventListener('DOMContentLoaded', () => {
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
-            appName: "Graphix Studio",
+            appName: "Diagram Craft",
             version: "1.0.6", // Incremented version for this debug attempt
-            aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
+            aboutDescription: "Diagram Craft is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
             // Reminder: Email address is visible in client-side code.
             supportEmail: "abdulwaheed18@gmail.com",
             autoRenderIntervalSeconds: 5,
-            defaultDiagramCode: `sequenceDiagram\n    participant Alice\n    participant Bob\n    Alice->>Bob: Hi Bob! Welcome to Graphix Studio!\n    Bob-->>Alice: Thanks! This looks great.\n    Note right of Bob: Exploring features...`
+            defaultDiagramCode: `sequenceDiagram\n    participant Alice\n    participant Bob\n    Alice->>Bob: Hi Bob! Welcome to Diagram Craft!\n    Bob-->>Alice: Thanks! This looks great.\n    Note right of Bob: Exploring features...`
         };
 
         document.title = `${APP_CONFIG.appName} - Online Diagram Editor`;
@@ -374,7 +374,7 @@
             theme: "material-darker",
             lineWrapping: true,
         });
-        let initialCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
+        let initialCode = APP_CONFIG.defaultDiagramCode.replace("Diagram Craft", APP_CONFIG.appName);
         codeEditor.setValue(initialCode);
 
          setTimeout(() => {
@@ -436,7 +436,7 @@
                 const currentEditorValue = codeEditor.getValue();
                 const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
                 if (currentEditorValue.trim() === "" || themePlaceholderRegex.test(currentEditorValue)) {
-                    let newDefaultCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
+                    let newDefaultCode = APP_CONFIG.defaultDiagramCode.replace("Diagram Craft", APP_CONFIG.appName);
                     newDefaultCode = newDefaultCode.replace(themePlaceholderRegex, `Current theme: ${themeNameForDefaultText}`);
                     codeEditor.setValue(newDefaultCode);
                 }
@@ -693,7 +693,7 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         let importedCode = e.target.result;
-                        const commentRegex = /^%% This code was created via Graphix Studio.*\n%% Timestamp: .*\n\n/m;
+                        const commentRegex = /^%% This code was created via Diagram Craft.*\n%% Timestamp: .*\n\n/m;
                         importedCode = importedCode.replace(commentRegex, '');
                         codeEditor.setValue(importedCode);
                         renderDiagram();
