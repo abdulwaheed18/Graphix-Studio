@@ -1,108 +1,108 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"> <head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Graphix Studio - Online Diagram Editor</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/material-darker.min.css"> <style>
-    /* Styles are embedded for single-file simplicity */
-    body {
-        font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-    }
-    #mermaidOutputContainer { cursor: grab; overflow: hidden; position: relative; background-color: #F7FAFC; }
-    #mermaidOutputContainer.grabbing { cursor: grabbing; }
-    #mermaidOutput {
-        transform-origin: 0 0; transition: transform 0.2s ease-out;
-        width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
-    }
-    .mermaid svg { display: block; }
-    .error-message {
-        background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171;
-        border-radius: 0.375rem; padding: 1rem; margin-top: 0.5rem; font-size: 0.875rem;
-    }
-    #loadingIndicator, #downloadingIndicator {
-        display: none; position: absolute; top: 50%; left: 50%;
-        transform: translate(-50%, -50%); font-size: 1.25rem; color: #3b82f6;
-        background-color: rgba(255, 255, 255, 0.9); padding: 1rem; border-radius: 0.375rem; z-index: 50;
-    }
-    .action-button-group { position: relative; }
-    .action-dropdown {
-        display: none; position: absolute; right: 0; top: 100%;
-        background-color: white; border: 1px solid #e5e7eb; border-radius: 0.375rem;
-        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
-        z-index: 40; min-width: 220px; margin-top: 0.25rem;
-    }
-    .action-dropdown .dropdown-item, .action-dropdown .dropdown-header {
-        display: block; width: 100%; text-align: left; padding: 0.5rem 1rem;
-        font-size: 0.875rem; color: #374151;
-    }
-    .action-dropdown .dropdown-item:hover { background-color: #f3f4f6; }
-    .action-dropdown .dropdown-item:disabled { color: #9ca3af; cursor: not-allowed; }
-    .action-dropdown .dropdown-header {
-        font-weight: 600; color: #6b7280; padding-bottom: 0.25rem;
-        border-bottom: 1px solid #e5e7eb; margin-bottom: 0.25rem;
-    }
-    .action-dropdown input[type="text"], .action-dropdown select { margin-bottom: 0.5rem; }
-    .action-dropdown #customColorInputContainer label, .action-dropdown #customColorError { margin-left: 1rem; margin-right: 1rem; }
-    .dropdown-divider { height: 1px; background-color: #e5e7eb; margin: 0.5rem 0; }
-    #helpModal, #aboutModal { z-index: 60; }
-    .help-content pre, .about-content p {
-        background-color: #f3f4f6; padding: 0.75rem; border-radius: 0.375rem;
-        overflow-x: auto; font-size: 0.8rem; line-height: 1.4;
-    }
-     .about-content p { background-color: transparent; padding: 0.25rem 0; }
-    .help-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
-    .help-content h4, .about-content h4 { margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; color: #1f2937; }
-    .help-content ul { list-style-type: disc; padding-left: 1.5rem; }
-    .help-content li { margin-bottom: 0.25rem; }
-    #mainContent { display: flex; overflow: hidden; }
-    #leftPanel, #rightPanel { flex-grow: 1; flex-shrink: 1; overflow: auto; min-width: 200px; }
-    #resizer { flex-basis: 8px; flex-shrink: 0; background-color: #d1d5db; cursor: col-resize; transition: background-color 0.2s ease-in-out; }
-    #resizer:hover { background-color: #6366f1; }
-    /* #mermaidInput { min-height: 200px; } /* Replaced by CodeMirror */
-    #zoomControls button:disabled { cursor: not-allowed; opacity: 0.5; }
-    #notificationToast {
-        position: fixed; bottom: 20px; left: 50%;
-        transform: translateX(-50%) translateY(100%);
-        background-color: #2d3748; color: white;
-        padding: 0.75rem 1.5rem; border-radius: 0.375rem;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 100;
-        opacity: 0; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        visibility: hidden;
-    }
-    #notificationToast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/material-darker.min.css" />
 
-    /* CodeMirror specific styles */
-    .CodeMirror {
-        border: 1px solid #d1d5db; /* Tailwind gray-300 */
-        border-radius: 0.375rem; /* Tailwind rounded-md */
-        height: auto; /* Auto height initially, JS will set flex-grow behavior */
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-        font-size: 0.875rem; /* Tailwind text-sm */
-        line-height: 1.5;
-        flex-grow: 1; /* Make CodeMirror instance take available space */
-        min-height: 200px; /* Ensure a minimum height */
-    }
-    /* Ensure left panel's flex direction allows CodeMirror to grow */
-    #leftPanel .flex-grow {
-        display: flex; /* This will apply to the div CodeMirror replaces the textarea with */
-        flex-direction: column;
-    }
-     /* Style for the CodeMirror wrapper to make it behave like a flex item */
-    #editorContainer {
-        flex-grow: 1;
-        display: flex; /* This will make CodeMirror instance inside it also grow */
-    }
-</style>
+    <style>
+        /* Styles are embedded for single-file simplicity */
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        #mermaidOutputContainer { cursor: grab; overflow: hidden; position: relative; background-color: #F7FAFC; }
+        #mermaidOutputContainer.grabbing { cursor: grabbing; }
+        #mermaidOutput {
+            transform-origin: 0 0; transition: transform 0.2s ease-out;
+            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+        }
+        .mermaid svg { display: block; }
+        .error-message {
+            background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171;
+            border-radius: 0.375rem; padding: 1rem; margin-top: 0.5rem; font-size: 0.875rem;
+        }
+        #loadingIndicator, #downloadingIndicator {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); font-size: 1.25rem; color: #3b82f6;
+            background-color: rgba(255, 255, 255, 0.9); padding: 1rem; border-radius: 0.375rem; z-index: 50;
+        }
+        .action-button-group { position: relative; }
+        .action-dropdown {
+            display: none; position: absolute; right: 0; top: 100%;
+            background-color: white; border: 1px solid #e5e7eb; border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            z-index: 40; min-width: 220px; margin-top: 0.25rem;
+        }
+        .action-dropdown .dropdown-item, .action-dropdown .dropdown-header {
+            display: block; width: 100%; text-align: left; padding: 0.5rem 1rem;
+            font-size: 0.875rem; color: #374151;
+        }
+        .action-dropdown .dropdown-item:hover { background-color: #f3f4f6; }
+        .action-dropdown .dropdown-item:disabled { color: #9ca3af; cursor: not-allowed; }
+        .action-dropdown .dropdown-header {
+            font-weight: 600; color: #6b7280; padding-bottom: 0.25rem;
+            border-bottom: 1px solid #e5e7eb; margin-bottom: 0.25rem;
+        }
+        .action-dropdown input[type="text"], .action-dropdown select { margin-bottom: 0.5rem; }
+        .action-dropdown #customColorInputContainer label, .action-dropdown #customColorError { margin-left: 1rem; margin-right: 1rem; }
+        .dropdown-divider { height: 1px; background-color: #e5e7eb; margin: 0.5rem 0; }
+        #helpModal, #aboutModal { z-index: 60; }
+        .help-content pre, .about-content p {
+            background-color: #f3f4f6; padding: 0.75rem; border-radius: 0.375rem;
+            overflow-x: auto; font-size: 0.8rem; line-height: 1.4;
+        }
+         .about-content p { background-color: transparent; padding: 0.25rem 0; }
+        .help-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
+        .help-content h4, .about-content h4 { margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; color: #1f2937; }
+        .help-content ul { list-style-type: disc; padding-left: 1.5rem; }
+        .help-content li { margin-bottom: 0.25rem; }
+        #mainContent { display: flex; overflow: hidden; }
+        #leftPanel, #rightPanel { flex-grow: 1; flex-shrink: 1; overflow: auto; min-width: 200px; }
+        #resizer { flex-basis: 8px; flex-shrink: 0; background-color: #d1d5db; cursor: col-resize; transition: background-color 0.2s ease-in-out; }
+        #resizer:hover { background-color: #6366f1; }
+        #zoomControls button:disabled { cursor: not-allowed; opacity: 0.5; }
+        #notificationToast {
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            background-color: #2d3748; color: white;
+            padding: 0.75rem 1.5rem; border-radius: 0.375rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 100;
+            opacity: 0; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            visibility: hidden;
+        }
+        #notificationToast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+        /* CodeMirror specific styles */
+        .CodeMirror {
+            border: 1px solid #d1d5db; /* Tailwind gray-300 */
+            border-radius: 0.375rem; /* Tailwind rounded-md */
+            height: auto; /* Auto height initially, JS will set flex-grow behavior */
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.875rem; /* Tailwind text-sm */
+            line-height: 1.5;
+            flex-grow: 1; /* Make CodeMirror instance take available space */
+            min-height: 200px; /* Ensure a minimum height */
+        }
+        #leftPanel .flex-grow { /* Ensure left panel's flex direction allows CodeMirror to grow */
+            display: flex;
+            flex-direction: column;
+        }
+        #editorContainer { /* Style for the CodeMirror wrapper to make it behave like a flex item */
+            flex-grow: 1;
+            display: flex;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex flex-col h-screen">
 
@@ -142,21 +142,26 @@
             <h1 class="text-xl md:text-2xl font-bold text-gray-800">Graphix Studio</h1>
         </div>
 
-        <div class="action-button-group">
-            <button id="exportButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-md shadow-sm transition duration-150 text-sm" disabled>
-                <i class="fas fa-download mr-1"></i> Export Diagram
-            </button>
-            <div id="exportDropdown" class="action-dropdown">
-                <div class="dropdown-header">Image Only</div>
-                <button id="downloadPngImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-image mr-2"></i>PNG</button>
-                <button id="downloadPdfImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                <button id="downloadSvgImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-code mr-2"></i>SVG</button>
-                <div class="dropdown-divider"></div>
-                <div class="dropdown-header">Image + Code</div>
-                <button id="downloadPngWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>PNG + Code (.graphix)</button>
-                <button id="downloadPdfWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>PDF + Code (.graphix)</button>
-                <button id="downloadSvgWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>SVG + Code (.graphix)</button>
+        <div class="flex items-center space-x-2">
+            <div class="action-button-group">
+                <button id="exportButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-3 rounded-md shadow-sm transition duration-150 text-sm" disabled>
+                    <i class="fas fa-download mr-1"></i> Export Diagram
+                </button>
+                <div id="exportDropdown" class="action-dropdown">
+                    <div class="dropdown-header">Image Only</div>
+                    <button id="downloadPngImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-image mr-2"></i>PNG</button>
+                    <button id="downloadPdfImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                    <button id="downloadSvgImageOnlyButton" class="dropdown-item" disabled><i class="fas fa-file-code mr-2"></i>SVG</button>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-header">Image + Code</div>
+                    <button id="downloadPngWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>PNG + Code (.graphix)</button>
+                    <button id="downloadPdfWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>PDF + Code (.graphix)</button>
+                    <button id="downloadSvgWithCodeButton" class="dropdown-item" disabled><i class="fas fa-file-archive mr-2"></i>SVG + Code (.graphix)</button>
+                </div>
             </div>
+            <button id="buyMeACoffeeButton" class="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-semibold py-2 px-3 rounded-md shadow-sm transition duration-150 ease-in-out text-sm flex items-center">
+                <i class="fas fa-coffee mr-2"></i>Buy Me A Coffee
+            </button>
         </div>
     </div>
 </header>
@@ -258,15 +263,18 @@
 <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/markdown/markdown.js"></script> <script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/mode/markdown/markdown.js"></script>
+
+<script>
     // JavaScript is embedded for single-file simplicity
     document.addEventListener('DOMContentLoaded', () => {
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.0.1", // Example version incremented
+            version: "1.0.6", // Incremented version for this debug attempt
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
-            supportContactUrl: "<TBD>",
+            supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
+            // Reminder: Email address is visible in client-side code.
             supportEmail: "abdulwaheed18@gmail.com",
             autoRenderIntervalSeconds: 5,
             defaultDiagramCode: `sequenceDiagram\n    participant Alice\n    participant Bob\n    Alice->>Bob: Hi Bob! Welcome to Graphix Studio!\n    Bob-->>Alice: Thanks! This looks great.\n    Note right of Bob: Exploring features...`
@@ -279,7 +287,7 @@
         if (autoRenderLabel) autoRenderLabel.textContent = `Auto-render (${APP_CONFIG.autoRenderIntervalSeconds}s)`;
 
 
-        const { jsPDF } = window.jspdf || {};
+        const { jsPDF } = window.jspdf || {}; // Ensure jsPDF is accessed after its script tag
         if (!jsPDF) {
             console.error("jsPDF not loaded! PDF download will not be available.");
             const pdfButton = document.getElementById('downloadPdfImageOnlyButton');
@@ -303,7 +311,6 @@
         let codeChangedSinceLastRender = false;
         const AUTO_RENDER_INTERVAL = APP_CONFIG.autoRenderIntervalSeconds * 1000;
 
-        // const mermaidInput = document.getElementById('mermaidInput'); // Will be replaced by CodeMirror instance
         const mermaidOutputContainer = document.getElementById('mermaidOutputContainer');
         const mermaidOutput = document.getElementById('mermaidOutput');
         const renderButton = document.getElementById('renderButton');
@@ -332,6 +339,7 @@
         const downloadPngWithCodeButton = document.getElementById('downloadPngWithCodeButton');
         const downloadPdfWithCodeButton = document.getElementById('downloadPdfWithCodeButton');
         const downloadSvgWithCodeButton = document.getElementById('downloadSvgWithCodeButton');
+        const buyMeACoffeeButton = document.getElementById('buyMeACoffeeButton');
 
         const copyCodeButton = document.getElementById('copyCodeButton');
         const helpModal = document.getElementById('helpModal');
@@ -360,7 +368,6 @@
         const resizer = document.getElementById('resizer');
 
 
-        // --- Initialize CodeMirror ---
         const codeEditor = CodeMirror.fromTextArea(document.getElementById('mermaidInput'), {
             lineNumbers: true,
             mode: "markdown",
@@ -410,7 +417,14 @@
             else if (theme === 'custom') { Object.assign(themeVariables, { primaryColor: effectiveCustomColor, background: '#FFFFFF', primaryTextColor: '#212121', lineColor: effectiveCustomColor, actorBkg: effectiveCustomColor, actorTextColor: '#FFFFFF', actorBorder: effectiveCustomColor, participantBkg: '#F0F4F8', participantBorder: effectiveCustomColor, messageText: '#212121', noteBkg: '#F8F9FA', noteTextColor: '#212121', labelBoxBkgColor: effectiveCustomColor, labelTextColor: '#FFFFFF', }); }
             else { Object.assign(themeVariables, { background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242', actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#FFF9C4', noteTextColor: '#424242', labelBoxBkgColor: '#E8EAF6', labelTextColor: '#212121', }); }
             if (mermaidOutputContainer) { mermaidOutputContainer.style.backgroundColor = (theme === 'dark' || theme === 'forest') ? '#2D3748' : '#F7FAFC'; }
-            mermaid.initialize({ startOnLoad: false, theme: (theme === 'custom') ? 'default' : theme, securityLevel: 'loose', sequence: { diagramMarginX: 50, diagramMarginY: 10, actorMargin: 50, width: 150, height: 65, boxMargin: 10, boxTextMargin: 5, noteMargin: 10, messageMargin: 35, mirrorActors: true, bottomMarginAdj: 1, useMaxWidth: true, rightAngles: false, showSequenceNumbers: false }, themeVariables: themeVariables });
+
+            mermaid.initialize({
+                startOnLoad: false,
+                theme: (theme === 'custom') ? 'default' : theme,
+                securityLevel: 'loose', // REVIEW THIS SETTING BASED ON YOUR SECURITY REQUIREMENTS
+                sequence: { diagramMarginX: 50, diagramMarginY: 10, actorMargin: 50, width: 150, height: 65, boxMargin: 10, boxTextMargin: 5, noteMargin: 10, messageMargin: 35, mirrorActors: true, bottomMarginAdj: 1, useMaxWidth: true, rightAngles: false, showSequenceNumbers: false },
+                themeVariables: themeVariables
+            });
         }
 
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
@@ -418,12 +432,12 @@
         function updateDefaultMermaidCodePlaceholder() {
              if (codeEditor) {
                 let themeNameForDefaultText = currentMermaidTheme;
-                if (currentMermaidTheme === 'custom') { themeNameForDefaultText = `Custom (${currentCustomColor})`;}
+                if (currentMermaidTheme === 'custom') { themeNameForDefaultText = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`;}
                 const currentEditorValue = codeEditor.getValue();
                 const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
                 if (currentEditorValue.trim() === "" || themePlaceholderRegex.test(currentEditorValue)) {
                     let newDefaultCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
-                    newDefaultCode = newDefaultCode.replace(/Current theme: [\w\s()#]+/, `Current theme: ${themeNameForDefaultText}`);
+                    newDefaultCode = newDefaultCode.replace(themePlaceholderRegex, `Current theme: ${themeNameForDefaultText}`);
                     codeEditor.setValue(newDefaultCode);
                 }
             }
@@ -516,8 +530,16 @@
                 if (aboutModalTitle) aboutModalTitle.textContent = `About ${APP_CONFIG.appName}`;
                 if (aboutDescription) aboutDescription.textContent = APP_CONFIG.aboutDescription;
                 if (aboutVersion) aboutVersion.textContent = APP_CONFIG.version;
-                if (aboutSupportContact) { aboutSupportContact.textContent = APP_CONFIG.supportContactUrl; aboutSupportContact.href = APP_CONFIG.supportContactUrl; aboutSupportContact.target = "_blank"; }
-                if (aboutSupportEmail) { aboutSupportEmail.textContent = APP_CONFIG.supportEmail; aboutSupportEmail.href = `mailto:${APP_CONFIG.supportEmail}`; }
+                if (aboutSupportContact) {
+                    aboutSupportContact.textContent = APP_CONFIG.supportContactUrl;
+                    aboutSupportContact.href = APP_CONFIG.supportContactUrl;
+                    aboutSupportContact.target = "_blank";
+                    aboutSupportContact.rel = "noopener noreferrer"; // Secure external link
+                }
+                if (aboutSupportEmail) {
+                    aboutSupportEmail.textContent = APP_CONFIG.supportEmail;
+                    aboutSupportEmail.href = `mailto:${APP_CONFIG.supportEmail}`;
+                }
                 aboutModal.classList.remove('hidden');
                 if (topLeftDropdown) topLeftDropdown.style.display = 'none';
             });
@@ -575,7 +597,14 @@
             } catch (error) {
                 console.error("Mermaid rendering error:", error);
                 if (!isAutoRender || (isAutoRender && codeEditor.getValue() !== lastRenderedCode)) {
-                    if(errorMessageContainer) errorMessageContainer.innerHTML = `<div class="error-message">Error rendering diagram: ${error.message || 'Invalid Mermaid syntax.'}</div>`;
+                    // Secure Error Message Display: Create elements programmatically
+                    if (errorMessageContainer) {
+                        errorMessageContainer.innerHTML = ''; // Clear previous error
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-message';
+                        errorDiv.textContent = `Error rendering diagram: ${error.message || 'Invalid Mermaid syntax.'}`;
+                        errorMessageContainer.appendChild(errorDiv);
+                    }
                     if(mermaidOutput) mermaidOutput.innerHTML = '<p class="text-red-500 text-center mt-10">Could not render diagram due to an error.</p>';
                 }
             } finally {
@@ -698,13 +727,6 @@
 
             clonedSvgElement.setAttribute('width', String(originalWidth));
             clonedSvgElement.setAttribute('height', String(originalHeight));
-
-            // ---- THE FIX: Removed the style override that was causing theme issues on export ----
-            // const styleEl = document.createElement('style');
-            // styleEl.innerHTML = `svg { background-color: white !important; } text, .messageText, .actorInternal, .labelText, .noteText, .loopText, .sequenceNumber, tspan, .edgeLabel { fill: #000000 !important; stroke: none !important; color: black !important; } .actor path, .participant path, .note rect, .loopLine, .messageLine0, .messageLine1, .edgePath path, line, polyline, path { stroke: #000000 !important; } .cluster rect, .cluster path, rect[rx]:not(.note), rect[ry]:not(.note) { fill: #f0f0f0 !important; stroke: #000000 !important; } .note rect { fill: #FFFFE0 !important; stroke: #A0A0A0 !important; }`;
-            // clonedSvgElement.prepend(styleEl);
-            // ---- END OF FIX ----
-
             return { element: clonedSvgElement, width: originalWidth, height: originalHeight };
         }
 
@@ -798,7 +820,6 @@
             if (exportDropdown) exportDropdown.style.display = 'none';
         });
 
-        // --- Start: Copy Image to Clipboard Functionality ---
         async function getPngBlobFromDiagram() {
             const svgData = getSvgElementForDownload();
             if (!svgData) {
@@ -863,9 +884,7 @@
                 }
             });
         }
-        // --- End: Copy Image to Clipboard Functionality ---
 
-        // --- Start: Fullscreen Functionality ---
         if (fullscreenButton && rightPanel) {
             fullscreenButton.addEventListener('click', () => {
                 if (!document.fullscreenElement) {
@@ -892,7 +911,6 @@
                 }
             });
         }
-        // --- End: Fullscreen Functionality ---
 
         if (renderButton) renderButton.addEventListener('click', () => renderDiagram(false));
 
@@ -953,6 +971,19 @@
         }
         loadPanelWidths();
         window.addEventListener('resize', () => { applyPanelWidths(); });
+
+        if (buyMeACoffeeButton) {
+            buyMeACoffeeButton.addEventListener('click', () => {
+                // Updated Buy Me A Coffee URL
+                const buyMeACoffeeUrl = 'https://www.buymeacoffee.com/coffeeoverflow';
+
+                // The check for 'yourusername' is no longer needed if you always want to direct to 'coffeeoverflow'
+                // However, if you might change it later and want a reminder, you can adapt the condition.
+                // For now, this directly uses the provided username.
+                window.open(buyMeACoffeeUrl, '_blank', 'noopener,noreferrer');
+                showNotification('Thank you! Redirecting to Buy Me A Coffee...', 3000);
+            });
+        }
 
         if (codeEditor.getValue().trim()) { renderDiagram(false); }
         else if (mermaidOutput) { mermaidOutput.innerHTML = '<p class="text-gray-400 text-center mt-10">Enter diagram code in the left panel and click "Render Diagram".</p>'; }
