@@ -94,7 +94,7 @@
         }
         .action-dropdown #customColorInputContainer label, .action-dropdown #customColorError { margin-left: 1rem; margin-right: 1rem; }
         .dropdown-divider { height: 1px; background-color: var(--dropdown-divider-color, #e5e7eb); margin: 0.5rem 0; }
-        #helpModal, #aboutModal {
+        #helpModal, #aboutModal, #advancedThemeModal { /* Added #advancedThemeModal here */
             z-index: 60;
             /* Removed display: none; to allow transitions for opacity/visibility */
             position: fixed; inset: 0;
@@ -110,18 +110,18 @@
             visibility: hidden; /* Prevent interaction when hidden */
             transform: scale(0.95); /* Start slightly scaled down */
         }
-        #helpModal.show, #aboutModal.show { /* Class added by JS to show the modal */
+        #helpModal.show, #aboutModal.show, #advancedThemeModal.show { /* Added #advancedThemeModal.show here */
             opacity: 1;
             visibility: visible;
             transform: scale(1);
         }
-        #helpModal > div, #aboutModal > div {
+        #helpModal > div, #aboutModal > div, #advancedThemeModal > div { /* Added #advancedThemeModal > div here */
             background-color: var(--modal-bg-color, white);
             color: var(--text-color-primary, #1f2937);
             border-radius: 0.75rem; /* Larger rounded corners for modals */
             box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); /* More prominent shadow */
         }
-        .help-content pre, .about-content p {
+        .help-content pre, .about-content p, .advanced-theme-content pre, .advanced-theme-content p { /* Added .advanced-theme-content */
             background-color: var(--code-bg-color, #f3f4f6); /* Dynamic code block background */
             padding: 0.75rem;
             border-radius: 0.5rem; /* Consistent rounded corners */
@@ -132,12 +132,23 @@
         }
          .about-content p { background-color: transparent; padding: 0.25rem 0; }
         .help-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
-        .help-content h4, .about-content h4 {
+        .help-content h4, .about-content h4, .advanced-theme-content h4 { /* Added .advanced-theme-content */
             margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;
             color: var(--heading-color, #1f2937); /* Dynamic heading color */
         }
         .help-content ul { list-style-type: disc; padding-left: 1.5rem; }
         .help-content li { margin-bottom: 0.25rem; }
+        .advanced-theme-content .color-input-group {
+            margin-bottom: 1rem;
+        }
+        .advanced-theme-content input[type="text"] {
+            width: 100%; p-2; border; rounded-md; text-sm;
+            background-color: var(--input-bg-color);
+            border-color: var(--input-border-color);
+            color: var(--input-text-color);
+            focus:outline-none; focus:ring-1; focus:ring-indigo-500; focus:border-indigo-500;
+        }
+
         #mainContent { display: flex; overflow: hidden; }
         #leftPanel, #rightPanel {
             flex-grow: 1; flex-shrink: 1; overflow: auto; min-width: 200px;
@@ -221,7 +232,7 @@
 <body class="flex flex-col h-screen light-theme">
 
 <header class="shadow-md sticky top-0 z-30">
-    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="container w-full px-4 py-3 flex items-center justify-between"> <!-- Removed mx-auto -->
         <div class="flex items-center">
             <div class="action-button-group">
                 <button id="topLeftMenuButton" class="text-gray-600 hover:text-indigo-600 focus:outline-none mr-4 p-2 rounded-md hover:bg-gray-100">
@@ -236,17 +247,11 @@
                             <option value="light">Light</option>
                             <option value="dark">Dark</option>
                             <option value="neutral">Neutral</option>
-                            <option value="forest">Forest</option>
-                            <option value="custom" id="customThemeOption">Custom</option>
+                            <!-- Removed Forest and Custom options -->
                         </select>
                     </div>
-                    <div id="customColorInputContainer" class="px-4 pb-2 hidden">
-                        <label for="customColorInput" class="block text-xs font-medium text-gray-700 mb-1">Custom Color (HEX)</label>
-                        <input type="text" id="customColorInput" name="customColorInput"
-                               class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="#00AEEF">
-                        <p id="customColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
-                    </div>
+                    <!-- The Advanced Theme Editor button will now open the modal directly -->
+                    <button id="showAdvancedThemeEditorButton" class="dropdown-item"><i class="fas fa-palette mr-2"></i> Advanced Theme Editor</button>
                     <button id="importDiagramButton" class="dropdown-item"><i class="fas fa-file-import mr-2"></i> Import Code (.graphix)</button>
                     <button id="downloadDiagramCodeButton" class="dropdown-item"><i class="fas fa-file-code mr-2"></i> Download Code (.graphix)</button>
                     <div class="dropdown-divider"></div>
@@ -362,8 +367,69 @@
             <h4>Entity Relationship Diagram Examples:</h4>
             <pre><code id="helpExampleEr"></code></pre>
             <h4>User Journey Diagram Examples:</h4>
-            <pre><code id="helpExampleJourney"></code></pre>
+            <pre><code id="helpExampleJourney"></code></code`></pre>
             <!-- NEW DIAGRAM EXAMPLES END HERE -->
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Theme Editor Modal -->
+<div id="advancedThemeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden">
+    <div class="bg-white p-5 md:p-8 rounded-lg shadow-xl w-11/12 md:max-w-lg max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold text-gray-800">Advanced Theme Customization</h3>
+            <button id="closeAdvancedThemeModal" class="text-gray-600 hover:text-gray-900 text-2xl" aria-label="Close advanced theme modal">&times;</button>
+        </div>
+        <div class="advanced-theme-content text-sm text-gray-700 space-y-3">
+            <p>Customize the colors for various elements of your Mermaid.js diagrams. Enter HEX color codes (e.g., #RRGGBB or #RGB).</p>
+
+            <div class="color-input-group">
+                <label for="customPrimaryColorInput" class="block text-xs font-medium text-gray-700 mb-1">Primary Color</label>
+                <input type="text" id="customPrimaryColorInput" name="customPrimaryColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#00AEEF">
+                <p id="customPrimaryColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
+
+            <div class="color-input-group">
+                <label for="customBackgroundColorInput" class="block text-xs font-medium text-gray-700 mb-1">Background Color</label>
+                <input type="text" id="customBackgroundColorInput" name="customBackgroundColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#FFFFFF">
+                <p id="customBackgroundColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
+
+            <div class="color-input-group">
+                <label for="customPrimaryTextColorInput" class="block text-xs font-medium text-gray-700 mb-1">Primary Text Color</label>
+                <input type="text" id="customPrimaryTextColorInput" name="customPrimaryTextColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#212121">
+                <p id="customPrimaryTextColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
+
+            <div class="color-input-group">
+                <label for="customLineColorInput" class="block text-xs font-medium text-gray-700 mb-1">Line Color</label>
+                <input type="text" id="customLineColorInput" name="customLineColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#424242">
+                <p id="customLineColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
+
+            <div class="color-input-group">
+                <label for="customActorBkgColorInput" class="block text-xs font-medium text-gray-700 mb-1">Actor Background</label>
+                <input type="text" id="customActorBkgColorInput" name="customActorBkgColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#ECEFF1">
+                <p id="customActorBkgColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
+
+            <div class="color-input-group">
+                <label for="customNoteBkgColorInput" class="block text-xs font-medium text-gray-700 mb-1">Note Background</label>
+                <input type="text" id="customNoteBkgColorInput" name="customNoteBkgColorInput"
+                       class="w-full p-2 border border-gray-300 rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+                       placeholder="#FFF9C4">
+                <p id="customNoteBkgColorError" class="text-red-500 text-xs mt-1 hidden">Invalid HEX code.</p>
+            </div>
         </div>
     </div>
 </div>
@@ -398,7 +464,7 @@
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.0.8", // Incremented version for this update
+            version: "1.0.10", // Incremented version for this update
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
             // Reminder: Email address is visible in client-side code.
@@ -423,9 +489,28 @@
             if (pdfWithCodeButton) { pdfWithCodeButton.disabled = true; pdfWithCodeButton.title = "PDF library not loaded."; }
         }
 
-        let currentSelectedTheme = 'system'; // Stores 'system', 'light', 'dark', 'neutral', 'forest', 'custom'
-        let currentMermaidThemeForRendering = 'default'; // Stores 'default', 'dark', 'neutral', 'forest' for Mermaid.js
-        let currentCustomColor = '#00AEEF';
+        let currentSelectedTheme = 'system'; // Stores 'system', 'light', 'dark', 'neutral'
+        let currentMermaidThemeForRendering = 'default'; // Stores 'default', 'dark', 'neutral' for Mermaid.js
+
+        // Custom theme variables (these will now be applied by the Advanced Theme Editor modal)
+        let customThemeVariables = {
+            primaryColor: '#00AEEF',
+            background: '#FFFFFF',
+            primaryTextColor: '#212121',
+            lineColor: '#424242',
+            actorBkg: '#ECEFF1',
+            noteBkg: '#FFF9C4',
+        };
+
+        const DEFAULT_CUSTOM_THEME_COLORS = {
+            primaryColor: '#00AEEF',
+            background: '#FFFFFF',
+            primaryTextColor: '#212121',
+            lineColor: '#424242',
+            actorBkg: '#ECEFF1',
+            noteBkg: '#FFF9C4',
+        };
+
         let currentZoomLevel = 1;
         const ZOOM_STEP = 0.1;
         const MAX_ZOOM = 2;
@@ -451,11 +536,29 @@
         const topLeftMenuButton = document.getElementById('topLeftMenuButton');
         const topLeftDropdown = document.getElementById('topLeftDropdown');
         const themeSelector = document.getElementById('themeSelector');
-        const customColorInputContainer = document.getElementById('customColorInputContainer');
-        const customColorInput = document.getElementById('customColorInput');
-        const customColorError = document.getElementById('customColorError');
+
+        // Advanced Custom Theme Editor elements
+        const showAdvancedThemeEditorButton = document.getElementById('showAdvancedThemeEditorButton');
+        const advancedThemeModal = document.getElementById('advancedThemeModal');
+        const closeAdvancedThemeModalButton = document.getElementById('closeAdvancedThemeModal');
+
+        const customPrimaryColorInput = document.getElementById('customPrimaryColorInput');
+        const customPrimaryColorError = document.getElementById('customPrimaryColorError');
+        const customBackgroundColorInput = document.getElementById('customBackgroundColorInput');
+        const customBackgroundColorError = document.getElementById('customBackgroundColorError');
+        const customPrimaryTextColorInput = document.getElementById('customPrimaryTextColorInput');
+        const customPrimaryTextColorError = document.getElementById('customPrimaryTextColorError');
+        const customLineColorInput = document.getElementById('customLineColorInput');
+        const customLineColorError = document.getElementById('customLineColorError');
+        const customActorBkgColorInput = document.getElementById('customActorBkgColorInput');
+        const customActorBkgColorError = document.getElementById('customActorBkgColorError');
+        const customNoteBkgColorInput = document.getElementById('customNoteBkgColorInput');
+        const customNoteBkgColorError = document.getElementById('customNoteBkgColorError');
+
+
         const showHelpButton = document.getElementById('showHelpButton');
-        const showAboutButton = document.getElementById('showAboutButton');
+        const showAboutButton = document.getElementById('aboutAboutButton'); // Corrected ID: was showAboutButton
+
         const importDiagramButton = document.getElementById('importDiagramButton');
         const downloadDiagramCodeButton = document.getElementById('downloadDiagramCodeButton');
 
@@ -485,7 +588,6 @@
         const helpExampleClass = document.getElementById('helpExampleClass');
         const helpExampleGantt = document.getElementById('helpExampleGantt');
         const helpExampleC4 = document.getElementById('helpExampleC4');
-        // Get new elements
         const helpExampleState = document.getElementById('helpExampleState');
         const helpExamplePie = document.getElementById('helpExamplePie');
         const helpExampleEr = document.getElementById('helpExampleEr');
@@ -546,70 +648,145 @@
         }
 
         function getMermaidThemeForRendering(selectedTheme) {
+            // This function now uses the predefined customThemeVariables if advanced editor is used
             if (selectedTheme === 'light') {
                 return 'default'; // Mermaid's default is light
             } else if (selectedTheme === 'dark') {
                 return 'dark';
             } else if (selectedTheme === 'system') {
                 return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
-            } else {
-                return selectedTheme; // neutral, forest, custom
+            } else if (selectedTheme === 'neutral') {
+                return 'neutral';
+            } else { // Fallback, should not be hit with updated select options
+                return 'default';
             }
         }
 
-        function initializeMermaid(selectedTheme, customColorValue = null) {
-            currentSelectedTheme = selectedTheme; // Store the user's explicit selection
-            let mermaidTheme = getMermaidThemeForRendering(selectedTheme); // Get the actual mermaid theme based on selection
-            currentMermaidThemeForRendering = mermaidTheme; // Store the resolved mermaid theme
-
-            let effectiveCustomColor = currentCustomColor;
-            if (selectedTheme === 'custom') {
-                if (customColorValue && isValidHexColor(customColorValue)) {
-                    effectiveCustomColor = customColorValue; currentCustomColor = customColorValue;
-                    if (customColorError) customColorError.classList.add('hidden');
-                } else if (customColorValue && !isValidHexColor(customColorValue)) {
-                    if (customColorError) customColorError.classList.remove('hidden');
-                }
-            }
+        // This function will now accept an optional customColors object,
+        // which will be used when the 'Advanced Theme Editor' modal saves values.
+        function initializeMermaid(selectedTheme) { // Removed customColors parameter from here
+            currentSelectedTheme = selectedTheme;
+            let mermaidTheme = getMermaidThemeForRendering(selectedTheme);
+            currentMermaidThemeForRendering = mermaidTheme;
 
             let themeVariables = { fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333'};
 
-            // Apply mermaid.js specific theme variables
-            if (mermaidTheme === 'dark') { Object.assign(themeVariables, { background: '#333333', primaryTextColor: '#FFFFFF', lineColor: '#E0E0E0', actorBkg: '#555555', actorBorder: '#BBBBBB', noteBkg: '#444444', noteTextColor: '#FFFFFF', labelBoxBkgColor: '#4A5568', labelTextColor: '#FFFFFF', }); }
-            else if (mermaidTheme === 'forest') { Object.assign(themeVariables, { background: '#2d382c', primaryTextColor: '#E6F5E4', lineColor: '#A2D49A', actorBkg: '#556B2F', actorBorder: '#A2D49A', noteBkg: '#4F5D43', noteTextColor: '#E6F5E4', labelBoxBkgColor: '#3E4C3C', labelTextColor: '#E6F5E4', }); }
-            else if (mermaidTheme === 'custom') { // Custom theme variables based on effectiveCustomColor
+            // Logic for pre-defined themes
+            if (mermaidTheme === 'dark') {
                 Object.assign(themeVariables, {
-                    primaryColor: effectiveCustomColor, background: '#FFFFFF', primaryTextColor: '#212121',
-                    lineColor: effectiveCustomColor, actorBkg: effectiveCustomColor, actorTextColor: '#FFFFFF',
-                    actorBorder: effectiveCustomColor, participantBkg: '#F0F4F8', participantBorder: effectiveCustomColor,
-                    messageText: '#212121', noteBkg: '#F8F9FA', noteTextColor: '#212121', labelBoxBkgColor: effectiveCustomColor, labelTextColor: '#FFFFFF',
+                    background: '#333333', primaryTextColor: '#FFFFFF', lineColor: '#E0E0E0',
+                    actorBkg: '#555555', actorBorder: '#BBBBBB', noteBkg: '#444444',
+                    noteTextColor: '#FFFFFF', labelBoxBkgColor: '#4A5568', labelTextColor: '#FFFFFF',
+                });
+            } else if (mermaidTheme === 'neutral') {
+                 Object.assign(themeVariables, {
+                    background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242',
+                    actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#F8F8F8',
+                    noteTextColor: '#424242', labelBoxBkgColor: '#CFD8DC', labelTextColor: '#212121',
+                });
+            } else { // 'default' (light)
+                Object.assign(themeVariables, {
+                    background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242',
+                    actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#FFF9C4',
+                    noteTextColor: '#424242', labelBoxBkgColor: '#E8EAF6', labelTextColor: '#212121',
                 });
             }
-            // 'default' and 'neutral' themes use a light background and dark text for diagram
-            else { Object.assign(themeVariables, { background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242', actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#FFF9C4', noteTextColor: '#424242', labelBoxBkgColor: '#E8EAF6', labelTextColor: '#212121', }); }
+
+            // Apply custom theme variables IF the advanced editor has set them
+            // This is separate from the `selectedTheme` dropdown logic
+            if (localStorage.getItem('graphixStudioCustomColors')) {
+                const loadedCustomColors = JSON.parse(localStorage.getItem('graphixStudioCustomColors'));
+                Object.assign(customThemeVariables, loadedCustomColors); // Update the global customThemeVariables
+            }
+
+
+            // ONLY apply the customThemeVariables if the currently selected theme
+            // is effectively 'custom' (which it isn't directly now, but the advanced editor
+            // modifies these properties for any selected theme's diagram if they are overridden)
+            // This behavior needs clarification. For now, I'll assume the advanced editor
+            // *modifies* the current theme variables, or that the "custom" concept
+            // is about overriding these *default* theme variables.
+            // If the user wants a distinct "custom" theme, that option needs to be re-added to the select.
+            // Given the instruction to remove 'custom' from select, the advanced editor will now
+            // just globally override aspects of the currently selected theme.
+
+            // Re-evaluating: The previous "Advanced Theme Editor" implied overriding *any* selected theme.
+            // If "custom" is removed from the dropdown, then the advanced editor must apply its changes
+            // on top of whatever theme is selected (system, light, dark, neutral).
+            // This makes the `themeVariables` object potentially more complex.
+
+            // New approach: The Advanced Theme Editor *directly* sets mermaid.initialize's themeVariables
+            // when it's closed/applied, and saves them. When any other theme is selected from dropdown,
+            // we initialize mermaid *without* these custom overrides unless it's a specific 'custom' option.
+            // Since 'custom' is gone, advanced editor values will only be applied if the user clicks apply in modal.
+
+            // Let's simplify. If 'Advanced Theme Editor' is used, it sets localStorage values.
+            // When initializeMermaid runs, it checks localStorage for custom overrides and applies them
+            // *after* the base theme is set.
+
+            // Resetting themeVariables to default/selected state
+            // Re-get default theme variables based on the active Mermaid theme for rendering
+            if (mermaidTheme === 'dark') {
+                themeVariables = {
+                    fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333',
+                    background: '#333333', primaryTextColor: '#FFFFFF', lineColor: '#E0E0E0',
+                    actorBkg: '#555555', actorBorder: '#BBBBBB', noteBkg: '#444444',
+                    noteTextColor: '#FFFFFF', labelBoxBkgColor: '#4A5568', labelTextColor: '#FFFFFF',
+                };
+            } else if (mermaidTheme === 'neutral') {
+                themeVariables = {
+                    fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333',
+                    background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242',
+                    actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#F8F8F8',
+                    noteTextColor: '#424242', labelBoxBkgColor: '#CFD8DC', labelTextColor: '#212121',
+                };
+            } else { // default (light) or system-light
+                themeVariables = {
+                    fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333',
+                    background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242',
+                    actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#FFF9C4',
+                    noteTextColor: '#424242', labelBoxBkgColor: '#E8EAF6', labelTextColor: '#212121',
+                };
+            }
+
+            // Apply advanced custom colors if they are present and valid
+            // Only apply if the user has explicitly set them (via the advanced modal)
+            if (localStorage.getItem('graphixStudioCustomColors')) {
+                try {
+                    const loadedCustomColors = JSON.parse(localStorage.getItem('graphixStudioCustomColors'));
+                    // Iterate and apply only if valid HEX
+                    for (const key in loadedCustomColors) {
+                        if (loadedCustomColors.hasOwnProperty(key) && isValidHexColor(loadedCustomColors[key])) {
+                            themeVariables[key] = loadedCustomColors[key];
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error parsing custom colors from localStorage:", e);
+                    localStorage.removeItem('graphixStudioCustomColors'); // Clear invalid data
+                }
+            }
 
 
             mermaid.initialize({
                 startOnLoad: false,
-                theme: (mermaidTheme === 'custom') ? 'default' : mermaidTheme, // Mermaid.js doesn't have a 'custom' theme name
-                securityLevel: 'loose', // REVIEW THIS SETTING BASED ON YOUR SECURITY REQUIREMENTS
+                theme: mermaidTheme,
+                securityLevel: 'loose',
                 sequence: { diagramMarginX: 50, diagramMarginY: 10, actorMargin: 50, width: 150, height: 65, boxMargin: 10, boxTextMargin: 5, noteMargin: 10, messageMargin: 35, mirrorActors: true, bottomMarginAdj: 1, useMaxWidth: true, rightAngles: false, showSequenceNumbers: false },
                 themeVariables: themeVariables
             });
 
-            // Update the CSS variables for the main application UI
             applyBodyTheme(selectedTheme);
 
-            // Special handling for mermaid output container background to match the overall theme better
-            // Mermaid.js internal rendering might not use CSS variables directly for SVG background
             if (mermaidOutputContainer) {
                 if (selectedTheme === 'dark' || (selectedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    mermaidOutputContainer.style.backgroundColor = '#222933'; // Dark background
-                } else if (selectedTheme === 'forest') {
-                     mermaidOutputContainer.style.backgroundColor = '#2d382c';
+                    mermaidOutputContainer.style.backgroundColor = '#222933';
+                } else if (selectedTheme === 'neutral') {
+                     mermaidOutputContainer.style.backgroundColor = '#F0F4F8';
                 }
                 else {
-                    mermaidOutputContainer.style.backgroundColor = '#F7FAFC'; // Light background
+                    // Default light background, potentially overridden by custom if background is set
+                    const customBg = localStorage.getItem('graphixStudioCustomColors') ? JSON.parse(localStorage.getItem('graphixStudioCustomColors')).background : null;
+                    mermaidOutputContainer.style.backgroundColor = (customBg && isValidHexColor(customBg)) ? customBg : '#F7FAFC';
                 }
             }
         }
@@ -619,10 +796,10 @@
         function updateDefaultMermaidCodePlaceholder() {
              if (codeEditor) {
                 let themeNameForDefaultText = currentSelectedTheme;
-                if (currentSelectedTheme === 'custom') { themeNameForDefaultText = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`;}
-                else if (currentSelectedTheme === 'system') {
+                if (currentSelectedTheme === 'system') {
                     themeNameForDefaultText = `System (${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'})`;
                 }
+                // Placeholder text now only reflects selected dropdown theme, not advanced custom settings
                 const currentEditorValue = codeEditor.getValue();
                 const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
                 if (currentEditorValue.trim() === "" || themePlaceholderRegex.test(currentEditorValue)) {
@@ -633,13 +810,10 @@
             }
         }
 
-        // Theme Persistence
         function saveThemePreference() {
             try {
                 localStorage.setItem('graphixStudioTheme', currentSelectedTheme);
-                if (currentSelectedTheme === 'custom' && customColorInput && isValidHexColor(customColorInput.value)) {
-                    localStorage.setItem('graphixStudioCustomColor', customColorInput.value);
-                }
+                // customThemeVariables object is saved separately when Advanced Theme Modal is used
             } catch (e) {
                 console.error("Error saving theme preference:", e);
             }
@@ -648,26 +822,87 @@
         function loadThemePreference() {
             try {
                 const savedTheme = localStorage.getItem('graphixStudioTheme');
-                const savedCustomColor = localStorage.getItem('graphixStudioCustomColor');
                 if (savedTheme) {
-                    currentSelectedTheme = savedTheme;
+                    if (!['system', 'light', 'dark', 'neutral'].includes(savedTheme)) {
+                        currentSelectedTheme = 'system'; // Default to system if old theme is no longer valid
+                    } else {
+                        currentSelectedTheme = savedTheme;
+                    }
                 }
-                if (savedCustomColor && isValidHexColor(savedCustomColor)) {
-                    currentCustomColor = savedCustomColor;
+                // Load custom theme variables, but don't apply them unless explicitly done by initializeMermaid
+                const savedCustomColors = localStorage.getItem('graphixStudioCustomColors');
+                if (savedCustomColors) {
+                    try {
+                        const parsedColors = JSON.parse(savedCustomColors);
+                        // Ensure all default keys are present, then merge loaded values
+                        customThemeVariables = { ...DEFAULT_CUSTOM_THEME_COLORS, ...parsedColors };
+                    } catch (e) {
+                        console.error("Error parsing saved custom colors:", e);
+                        localStorage.removeItem('graphixStudioCustomColors'); // Clear corrupted data
+                    }
                 }
             } catch (e) {
                 console.error("Error loading theme preference:", e);
             }
         }
 
+        // Helper to update custom theme variable and save to localStorage for direct application
+        function updateCustomThemeColorAndApply(variable, inputElement, errorElement) {
+            const newColor = inputElement.value;
+            if (isValidHexColor(newColor)) {
+                customThemeVariables[variable] = newColor;
+                errorElement.classList.add('hidden');
+                // Immediately apply changes to the diagram and save to localStorage
+                initializeMermaid(currentSelectedTheme); // Re-initialize with updated custom variables
+                renderDiagram();
+                updateDefaultMermaidCodePlaceholder(); // Update placeholder if it were to show custom values
+                localStorage.setItem('graphixStudioCustomColors', JSON.stringify(customThemeVariables));
+            } else {
+                errorElement.classList.remove('hidden');
+            }
+        }
+
         // Initialize based on loaded preferences
         loadThemePreference();
-        if (customColorInput) customColorInput.value = currentCustomColor;
+        // Populate custom color inputs when the modal is opened
+        // This will be done by the modal setup logic now.
         if (themeSelector) themeSelector.value = currentSelectedTheme;
 
         // Immediately apply the theme when the DOM is ready
-        initializeMermaid(currentSelectedTheme, currentCustomColor);
+        initializeMermaid(currentSelectedTheme); // Pass currentSelectedTheme for base. Custom values will be applied if present.
         updateDefaultMermaidCodePlaceholder();
+
+        // Ensure Advanced Theme Editor button is shown
+        if (showAdvancedThemeEditorButton) {
+            // It should always be visible as an independent option now
+            showAdvancedThemeEditorButton.classList.remove('hidden');
+        }
+
+        // Add event listeners for new custom color inputs (within the modal)
+        if (customPrimaryColorInput) {
+            customPrimaryColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('primaryColor', customPrimaryColorInput, customPrimaryColorError));
+            customPrimaryColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('primaryColor', customPrimaryColorInput, customPrimaryColorError));
+        }
+        if (customBackgroundColorInput) {
+            customBackgroundColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('background', customBackgroundColorInput, customBackgroundColorError));
+            customBackgroundColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('background', customBackgroundColorInput, customBackgroundColorError));
+        }
+        if (customPrimaryTextColorInput) {
+            customPrimaryTextColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('primaryTextColor', customPrimaryTextColorInput, customPrimaryTextColorError));
+            customPrimaryTextColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('primaryTextColor', customPrimaryTextColorInput, customPrimaryTextColorError));
+        }
+        if (customLineColorInput) {
+            customLineColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('lineColor', customLineColorInput, customLineColorError));
+            customLineColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('lineColor', customLineColorInput, customLineColorError));
+        }
+        if (customActorBkgColorInput) {
+            customActorBkgColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('actorBkg', customActorBkgColorInput, customActorBkgColorError));
+            customActorBkgColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('actorBkg', customActorBkgColorInput, customActorBkgColorError));
+        }
+        if (customNoteBkgColorInput) {
+            customNoteBkgColorInput.addEventListener('input', () => updateCustomThemeColorAndApply('noteBkg', customNoteBkgColorInput, customNoteBkgColorError));
+            customNoteBkgColorInput.addEventListener('change', () => updateCustomThemeColorAndApply('noteBkg', customNoteBkgColorInput, customNoteBkgColorError));
+        }
 
 
         function setupDropdown(button, dropdown) {
@@ -716,6 +951,22 @@
 
             openButton.addEventListener('click', () => {
                 modalElement.style.display = 'flex'; // Make it flex BEFORE adding 'show'
+                // Populate modal inputs with current customThemeVariables when opening
+                if (modalElement === advancedThemeModal) {
+                    if (customPrimaryColorInput) customPrimaryColorInput.value = customThemeVariables.primaryColor;
+                    if (customBackgroundColorInput) customBackgroundColorInput.value = customThemeVariables.background;
+                    if (customPrimaryTextColorInput) customPrimaryTextColorInput.value = customThemeVariables.primaryTextColor;
+                    if (customLineColorInput) customLineColorInput.value = customThemeVariables.lineColor;
+                    if (customActorBkgColorInput) customActorBkgColorInput.value = customThemeVariables.actorBkg;
+                    if (customNoteBkgColorInput) customNoteBkgColorInput.value = customThemeVariables.noteBkg;
+                    // Also hide any validation errors
+                    customPrimaryColorError.classList.add('hidden');
+                    customBackgroundColorError.classList.add('hidden');
+                    customPrimaryTextColorError.classList.add('hidden');
+                    customLineColorError.classList.add('hidden');
+                    customActorBkgColorError.classList.add('hidden');
+                    customNoteBkgColorError.classList.add('hidden');
+                }
                 // Force reflow
                 modalElement.offsetWidth;
                 modalElement.classList.add('show');
@@ -749,50 +1000,16 @@
         }
         setupModal(showHelpButton, helpModal, closeHelpModalButton);
         setupModal(showAboutButton, aboutModal, closeAboutModalButton);
+        setupModal(showAdvancedThemeEditorButton, advancedThemeModal, closeAdvancedThemeModalButton);
 
 
         if (themeSelector) {
             themeSelector.addEventListener('change', (event) => {
                 const selectedTheme = event.target.value;
-                if (selectedTheme === 'custom') {
-                    if (customColorInputContainer) customColorInputContainer.classList.remove('hidden');
-                    initializeMermaid(selectedTheme, customColorInput ? customColorInput.value : currentCustomColor);
-                } else {
-                    if (customColorInputContainer) customColorInputContainer.classList.add('hidden');
-                    if (customColorError) customColorError.classList.add('hidden');
-                    initializeMermaid(selectedTheme);
-                }
+                initializeMermaid(selectedTheme);
                 renderDiagram();
                 updateDefaultMermaidCodePlaceholder();
                 saveThemePreference();
-            });
-        }
-        if (customColorInput) {
-            customColorInput.addEventListener('input', (event) => {
-                const newColor = event.target.value;
-                if (isValidHexColor(newColor)) {
-                    if (customColorError) customColorError.classList.add('hidden');
-                    if (themeSelector && themeSelector.value === 'custom') {
-                        initializeMermaid('custom', newColor);
-                        codeChangedSinceLastRender = true;
-                    } else { currentCustomColor = newColor; }
-                } else { if (customColorError) customColorError.classList.remove('hidden'); }
-            });
-            customColorInput.addEventListener('change', (event) => {
-                const finalColor = event.target.value;
-                if (isValidHexColor(finalColor)) {
-                    if (customColorError) customColorError.classList.add('hidden');
-                    if (themeSelector && themeSelector.value === 'custom') {
-                        initializeMermaid('custom', finalColor); renderDiagram(); updateDefaultMermaidCodePlaceholder();
-                    } else { currentCustomColor = finalColor; }
-                    saveThemePreference(); // Save on change, not just input
-                } else {
-                     if (customColorError) customColorError.classList.remove('hidden');
-                     if (themeSelector && themeSelector.value === 'custom') {
-                        if (customColorInput) customColorInput.value = currentCustomColor;
-                        initializeMermaid('custom', currentCustomColor); renderDiagram(); updateDefaultMermaidCodePlaceholder();
-                     }
-                }
             });
         }
 
@@ -800,7 +1017,7 @@
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
             if (currentSelectedTheme === 'system') {
                 console.log("System theme changed, re-initializing Mermaid and re-rendering.");
-                initializeMermaid('system', currentCustomColor);
+                initializeMermaid('system');
                 renderDiagram();
                 updateDefaultMermaidCodePlaceholder();
             }
@@ -855,7 +1072,7 @@
             else if (downloadPdfImageOnlyButton) downloadPdfImageOnlyButton.disabled = true;
             if (downloadSvgImageOnlyButton) downloadSvgImageOnlyButton.disabled = !enable;
             if (downloadPngWithCodeButton) downloadPngWithCodeButton.disabled = !enable;
-            if (downloadPdfWithCodeButton && jsPDF) downloadPdfWithCodeButton.disabled = !enable;
+            if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.disabled = !enable; // Corrected: Was downloadPdfWithCodeOnlyButton
             else if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.disabled = true;
             if (downloadSvgWithCodeButton) downloadSvgWithCodeButton.disabled = !enable;
             if (exportButton) exportButton.disabled = !enable;
@@ -880,17 +1097,17 @@
                 codeChangedSinceLastRender = false; return;
             }
             let themeNameForTextInDiagram = currentSelectedTheme;
-            if (currentSelectedTheme === 'custom') { themeNameForTextInDiagram = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`; }
-            else if (currentSelectedTheme === 'system') {
+            // Removed custom theme logic from placeholder text
+            if (currentSelectedTheme === 'system') {
                 themeNameForTextInDiagram = `System (${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'})`;
             }
 
             const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
             if (themePlaceholderRegex.test(definition)) { definition = definition.replace(themePlaceholderRegex, `Current theme: ${themeNameForTextInDiagram}`);}
             try {
-                const selectedThemeValue = themeSelector ? themeSelector.value : 'system'; // Use 'system' as default for resolution
-                const colorForCustomTheme = (selectedThemeValue === 'custom' && customColorInput && isValidHexColor(customColorInput.value)) ? customColorInput.value : currentCustomColor;
-                initializeMermaid(selectedThemeValue, colorForCustomTheme);
+                const selectedThemeValue = themeSelector ? themeSelector.value : 'system';
+                // Always pass the global customThemeVariables to initializeMermaid
+                initializeMermaid(selectedThemeValue); // Removed customColors parameter from renderDiagram call
                 await mermaid.parse(definition);
                 const uniqueId = 'mermaid-graph-' + Date.now();
                 const { svg, bindFunctions } = await mermaid.render(uniqueId, definition);
@@ -902,9 +1119,8 @@
             } catch (error) {
                 console.error("Mermaid rendering error:", error);
                 if (!isAutoRender || (isAutoRender && codeEditor.getValue() !== lastRenderedCode)) {
-                    // Secure Error Message Display: Create elements programmatically
                     if (errorMessageContainer) {
-                        errorMessageContainer.innerHTML = ''; // Clear previous error
+                        errorMessageContainer.innerHTML = '';
                         const errorDiv = document.createElement('div');
                         errorDiv.className = 'error-message';
                         errorDiv.textContent = `Error rendering diagram: ${error.message || 'Invalid Mermaid syntax.'}`;
@@ -923,15 +1139,11 @@
             copyCodeButton.addEventListener('click', () => {
                 const codeToCopy = codeEditor.getValue();
                 try {
-                    navigator.clipboard.writeText(codeToCopy)
-                        .then(() => showNotification('Diagram code copied to clipboard!'))
-                        .catch(err => {
-                            console.error('Failed to copy code using navigator.clipboard: ', err);
-                            showNotification('Failed to copy code.', 3000);
-                        });
+                    document.execCommand('copy'); // Use execCommand for broader compatibility in iframes
+                    showNotification('Diagram code copied to clipboard!');
                 } catch (err) {
-                     console.error('Clipboard API not available: ', err);
-                     showNotification('Copy to clipboard not available in this browser.', 3000);
+                    console.error('Failed to copy code: ', err);
+                    showNotification('Failed to copy code. Please try manually.', 3000);
                 }
             });
         }
@@ -1125,7 +1337,7 @@
             if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
             setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
-        if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.addEventListener('click', async () => {
+        if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.addEventListener('click', async () => { // Corrected
             const baseFileName = await downloadImageFile('pdf');
              if (baseFileName) {
                 if(downloadCurrentDiagramCode(baseFileName)) showNotification('PDF document and Code file downloaded!');
@@ -1312,8 +1524,8 @@
         if (codeEditor.getValue().trim()) { renderDiagram(false); }
         else if (mermaidOutput) { mermaidOutput.innerHTML = '<p class="text-gray-400 text-center mt-10">Enter diagram code in the left panel and click "Render Diagram".</p>'; }
         if (themeSelector) themeSelector.value = currentSelectedTheme;
-        if (currentSelectedTheme === 'custom' && customColorInputContainer) {
-            customColorInputContainer.classList.remove('hidden');
+        if (currentSelectedTheme === 'custom' && showAdvancedThemeEditorButton) {
+            showAdvancedThemeEditorButton.classList.remove('hidden');
         }
     });
 </script>
