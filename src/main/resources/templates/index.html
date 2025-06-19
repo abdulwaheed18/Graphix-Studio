@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/material-darker.min.css" />
@@ -20,63 +21,147 @@
         body {
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            background-color: var(--bg-color-primary, #f3f4f6); /* Dynamic background for light/dark */
+            color: var(--text-color-primary, #1f2937); /* Dynamic text color */
+            font-size: 1rem; /* Ensure a base font size for better scaling */
         }
-        #mermaidOutputContainer { cursor: grab; overflow: hidden; position: relative; background-color: #F7FAFC; }
+        #mermaidOutputContainer {
+            cursor: grab;
+            overflow: hidden;
+            position: relative;
+            background-color: var(--mermaid-output-bg, #F7FAFC); /* Dynamic background */
+        }
         #mermaidOutputContainer.grabbing { cursor: grabbing; }
         #mermaidOutput {
-            transform-origin: 0 0; transition: transform 0.2s ease-out;
-            width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+            transform-origin: 0 0;
+            transition: transform 0.2s ease-out;
+            width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
         }
         .mermaid svg { display: block; }
         .error-message {
             background-color: #fee2e2; color: #b91c1c; border: 1px solid #f87171;
-            border-radius: 0.375rem; padding: 1rem; margin-top: 0.5rem; font-size: 0.875rem;
+            border-radius: 0.5rem; /* Consistent rounded corners */
+            padding: 1rem; margin-top: 0.5rem; font-size: 0.875rem;
         }
         #loadingIndicator, #downloadingIndicator {
             display: none; position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%); font-size: 1.25rem; color: #3b82f6;
-            background-color: rgba(255, 255, 255, 0.9); padding: 1rem; border-radius: 0.375rem; z-index: 50;
+            background-color: rgba(255, 255, 255, 0.9); padding: 1rem;
+            border-radius: 0.5rem; /* Consistent rounded corners */
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* Added shadow */
+            z-index: 50;
         }
         .action-button-group { position: relative; }
         .action-dropdown {
-            display: none; position: absolute; right: 0; top: 100%;
-            background-color: white; border: 1px solid #e5e7eb; border-radius: 0.375rem;
+            /* Removed display: none; to allow transitions for opacity/visibility */
+            position: absolute; right: 0; top: 100%;
+            background-color: var(--dropdown-bg-color, white); /* Dynamic dropdown background */
+            border: 1px solid var(--border-color, #e5e7eb); /* Dynamic border */
+            border-radius: 0.5rem; /* Consistent rounded corners */
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             z-index: 40; min-width: 220px; margin-top: 0.25rem;
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out; /* Added transition */
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Prevent interaction when hidden */
+            transform: translateY(5px); /* Start slightly below */
+        }
+        .action-dropdown.show { /* Class added by JS to show the dropdown */
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
         .action-dropdown .dropdown-item, .action-dropdown .dropdown-header {
             display: block; width: 100%; text-align: left; padding: 0.5rem 1rem;
-            font-size: 0.875rem; color: #374151;
+            font-size: 0.875rem;
+            color: var(--dropdown-item-color, #374151); /* Dynamic dropdown item color */
         }
-        .action-dropdown .dropdown-item:hover { background-color: #f3f4f6; }
-        .action-dropdown .dropdown-item:disabled { color: #9ca3af; cursor: not-allowed; }
+        .action-dropdown .dropdown-item:hover { background-color: var(--dropdown-item-hover-bg, #f3f4f6); }
+        .action-dropdown .dropdown-item:disabled { color: var(--dropdown-item-disabled-color, #9ca3af); cursor: not-allowed; }
         .action-dropdown .dropdown-header {
-            font-weight: 600; color: #6b7280; padding-bottom: 0.25rem;
-            border-bottom: 1px solid #e5e7eb; margin-bottom: 0.25rem;
+            font-weight: 600;
+            color: var(--dropdown-header-color, #6b7280); /* Dynamic dropdown header color */
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--dropdown-header-border, #e5e7eb); /* Dynamic border */
+            margin-bottom: 0.25rem;
         }
-        .action-dropdown input[type="text"], .action-dropdown select { margin-bottom: 0.5rem; }
+        .action-dropdown input[type="text"], .action-dropdown select {
+            margin-bottom: 0.5rem;
+            background-color: var(--input-bg-color, #f9fafb); /* Dynamic input background */
+            border-color: var(--input-border-color, #d1d5db); /* Dynamic input border */
+            color: var(--input-text-color, #1f2937); /* Dynamic input text */
+            border-radius: 0.5rem; /* Consistent rounded corners */
+        }
         .action-dropdown #customColorInputContainer label, .action-dropdown #customColorError { margin-left: 1rem; margin-right: 1rem; }
-        .dropdown-divider { height: 1px; background-color: #e5e7eb; margin: 0.5rem 0; }
-        #helpModal, #aboutModal { z-index: 60; }
+        .dropdown-divider { height: 1px; background-color: var(--dropdown-divider-color, #e5e7eb); margin: 0.5rem 0; }
+        #helpModal, #aboutModal {
+            z-index: 60;
+            /* Removed display: none; to allow transitions for opacity/visibility */
+            position: fixed; inset: 0;
+            background-color: rgba(99, 102, 241, 0.4); /* Use a more subtle overlay color */
+            overflow-y: auto;
+            height: 100%; /* Use full CSS properties for h-full */
+            width: 100%; /* Use full CSS properties for w-full */
+            display: flex; /* Ensure flex is always on for centering content */
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; /* Added transition */
+            opacity: 0; /* Start hidden */
+            visibility: hidden; /* Prevent interaction when hidden */
+            transform: scale(0.95); /* Start slightly scaled down */
+        }
+        #helpModal.show, #aboutModal.show { /* Class added by JS to show the modal */
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1);
+        }
+        #helpModal > div, #aboutModal > div {
+            background-color: var(--modal-bg-color, white);
+            color: var(--text-color-primary, #1f2937);
+            border-radius: 0.75rem; /* Larger rounded corners for modals */
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); /* More prominent shadow */
+        }
         .help-content pre, .about-content p {
-            background-color: #f3f4f6; padding: 0.75rem; border-radius: 0.375rem;
-            overflow-x: auto; font-size: 0.8rem; line-height: 1.4;
+            background-color: var(--code-bg-color, #f3f4f6); /* Dynamic code block background */
+            padding: 0.75rem;
+            border-radius: 0.5rem; /* Consistent rounded corners */
+            overflow-x: auto;
+            font-size: 0.875rem; /* Match text-sm for better readability */
+            line-height: 1.4;
+            color: var(--text-color-primary, #1f2937); /* Dynamic text color */
         }
          .about-content p { background-color: transparent; padding: 0.25rem 0; }
         .help-content code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace; }
-        .help-content h4, .about-content h4 { margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600; color: #1f2937; }
+        .help-content h4, .about-content h4 {
+            margin-top: 1rem; margin-bottom: 0.5rem; font-weight: 600;
+            color: var(--heading-color, #1f2937); /* Dynamic heading color */
+        }
         .help-content ul { list-style-type: disc; padding-left: 1.5rem; }
         .help-content li { margin-bottom: 0.25rem; }
         #mainContent { display: flex; overflow: hidden; }
-        #leftPanel, #rightPanel { flex-grow: 1; flex-shrink: 1; overflow: auto; min-width: 200px; }
-        #resizer { flex-basis: 8px; flex-shrink: 0; background-color: #d1d5db; cursor: col-resize; transition: background-color 0.2s ease-in-out; }
+        #leftPanel, #rightPanel {
+            flex-grow: 1; flex-shrink: 1; overflow: auto; min-width: 200px;
+            background-color: var(--panel-bg-color, white); /* Dynamic panel background */
+            color: var(--text-color-primary, #1f2937); /* Dynamic text color */
+            border-radius: 0.75rem; /* Larger rounded corners for panels */
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* Consistent shadow for panels */
+        }
+        #leftPanel { border-top-right-radius: 0; border-bottom-right-radius: 0; } /* Keep panel division effect */
+        #rightPanel { border-top-left-radius: 0; border-bottom-left-radius: 0; } /* Keep panel division effect */
+        #resizer {
+            flex-basis: 8px; flex-shrink: 0;
+            background-color: var(--resizer-bg, #d1d5db); /* Dynamic resizer background */
+            cursor: col-resize; transition: background-color 0.2s ease-in-out;
+        }
         #resizer:hover { background-color: #6366f1; }
         #zoomControls button:disabled { cursor: not-allowed; opacity: 0.5; }
         #notificationToast {
             position: fixed; bottom: 20px; left: 50%;
             transform: translateX(-50%) translateY(100%);
-            background-color: #2d3748; color: white;
-            padding: 0.75rem 1.5rem; border-radius: 0.375rem;
+            background-color: var(--toast-bg-color, #2d3748); /* Dynamic toast background */
+            color: var(--toast-text-color, white); /* Dynamic toast text */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem; /* Consistent rounded corners */
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 100;
             opacity: 0; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
             visibility: hidden;
@@ -85,8 +170,8 @@
 
         /* CodeMirror specific styles */
         .CodeMirror {
-            border: 1px solid #d1d5db; /* Tailwind gray-300 */
-            border-radius: 0.375rem; /* Tailwind rounded-md */
+            border: 1px solid var(--cm-border-color, #d1d5db); /* Dynamic CodeMirror border */
+            border-radius: 0.5rem; /* Consistent rounded corners */
             height: auto; /* Auto height initially, JS will set flex-grow behavior */
             font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
             font-size: 0.875rem; /* Tailwind text-sm */
@@ -102,11 +187,40 @@
             flex-grow: 1;
             display: flex;
         }
+
+        /* Adjust header, panels, etc., to use CSS variables */
+        header {
+            background-color: var(--header-bg-color);
+            color: var(--header-text-color);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); /* Ensure shadow is defined */
+        }
+        header h1 {
+            color: var(--header-text-color);
+        }
+        header button {
+            color: var(--header-text-color);
+        }
+        .text-gray-600 { color: var(--text-color-primary); } /* Adjust specific text colors */
+        .text-gray-700 { color: var(--text-color-primary); }
+        .text-gray-800 { color: var(--heading-color); }
+        .text-gray-500 { color: var(--text-color-primary); }
+        .text-gray-400 { color: var(--text-color-primary); } /* For placeholder text */
+
+        /* Specific overrides for buttons that keep their original colors */
+        .bg-green-500, .bg-green-600, .bg-yellow-400, .bg-yellow-500 {
+            color: white !important; /* Ensure these buttons remain white text */
+        }
+        .bg-yellow-400, .bg-yellow-500 {
+            color: #1f2937 !important; /* Buy me a coffee button text */
+        }
+        .text-indigo-600 { color: #4f46e5; } /* Keep specific accent colors */
+        .hover\:text-indigo-600:hover { color: #4f46e5; }
+        .focus\:ring-indigo-500:focus { border-color: #6366f1; ring-color: #6366f1; }
     </style>
 </head>
-<body class="bg-gray-100 flex flex-col h-screen">
+<body class="flex flex-col h-screen light-theme">
 
-<header class="bg-white shadow-md sticky top-0 z-30">
+<header class="shadow-md sticky top-0 z-30">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center">
             <div class="action-button-group">
@@ -118,9 +232,10 @@
                     <div class="px-4 pt-2 pb-1">
                         <label for="themeSelector" class="block text-xs font-medium text-gray-700 mb-1">Theme</label>
                         <select id="themeSelector" class="w-full p-2 rounded-md bg-gray-50 border border-gray-300 text-gray-700 focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm">
-                            <option value="default">Default</option>
-                            <option value="neutral">Neutral</option>
+                            <option value="system">System Preference</option>
+                            <option value="light">Light</option>
                             <option value="dark">Dark</option>
+                            <option value="neutral">Neutral</option>
                             <option value="forest">Forest</option>
                             <option value="custom" id="customThemeOption">Custom</option>
                         </select>
@@ -139,7 +254,7 @@
                     <button id="showAboutButton" class="dropdown-item"><i class="fas fa-info-circle mr-2"></i> About Graphix Studio</button>
                 </div>
             </div>
-            <h1 class="text-xl md:text-2xl font-bold text-gray-800">Graphix Studio</h1>
+            <h1 class="text-xl md:text-2xl font-bold">Graphix Studio</h1>
         </div>
 
         <div class="flex items-center space-x-2">
@@ -167,7 +282,7 @@
 </header>
 
 <main id="mainContent" class="flex-grow flex overflow-hidden p-4 md:p-6 gap-0">
-    <div id="leftPanel" class="bg-white p-4 md:p-6 rounded-l-lg shadow-lg flex flex-col overflow-auto">
+    <div id="leftPanel" class="rounded-l-lg shadow-lg flex flex-col overflow-auto">
         <div class="flex justify-between items-center mb-2">
             <label for="mermaidInput" class="block text-lg font-semibold text-gray-700">Diagram Code:</label>
             <button id="copyCodeButton" title="Copy Code" class="p-2 text-gray-500 hover:text-indigo-600 focus:outline-none">
@@ -192,7 +307,7 @@
 
     <div id="resizer" class="w-2 bg-gray-300 hover:bg-indigo-500 cursor-col-resize flex-shrink-0" title="Drag to resize panels"></div>
 
-    <div id="rightPanel" class="bg-white p-4 md:p-6 rounded-r-lg shadow-lg flex flex-col relative overflow-auto">
+    <div id="rightPanel" class="rounded-r-lg shadow-lg flex flex-col relative overflow-auto">
         <div class="flex justify-between items-center mb-2 flex-shrink-0">
             <h2 class="text-lg font-semibold text-gray-700">Generated Diagram:</h2>
             <div id="zoomControls" class="flex items-center space-x-1">
@@ -209,7 +324,7 @@
         </div>
         <div id="loadingIndicator">Rendering Diagram...</div>
         <div id="downloadingIndicator">Preparing Download...</div>
-        <div id="mermaidOutputContainer" class="w-full flex-grow overflow-auto border border-gray-200 rounded-md p-2 bg-gray-50 min-h-[200px] relative cursor-grab">
+        <div id="mermaidOutputContainer" class="w-full flex-grow overflow-auto border border-gray-200 rounded-md p-2 min-h-[200px] relative cursor-grab">
             <div id="mermaidOutput">
                 <p class="text-gray-400 text-center mt-10">Your diagram will appear here.</p>
             </div>
@@ -237,6 +352,8 @@
             <pre><code id="helpExampleClass"></code></pre>
             <h4>Gantt Chart Examples:</h4>
             <pre><code id="helpExampleGantt"></code></pre>
+            <h4>C4 Model Examples:</h4>
+            <pre><code id="helpExampleC4"></code></pre>
         </div>
     </div>
 </div>
@@ -271,7 +388,7 @@
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.0.6", // Incremented version for this debug attempt
+            version: "1.0.7", // Incremented version for this update
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
             // Reminder: Email address is visible in client-side code.
@@ -296,7 +413,8 @@
             if (pdfWithCodeButton) { pdfWithCodeButton.disabled = true; pdfWithCodeButton.title = "PDF library not loaded."; }
         }
 
-        let currentMermaidTheme = 'default';
+        let currentSelectedTheme = 'system'; // Stores 'system', 'light', 'dark', 'neutral', 'forest', 'custom'
+        let currentMermaidThemeForRendering = 'default'; // Stores 'default', 'dark', 'neutral', 'forest' for Mermaid.js
         let currentCustomColor = '#00AEEF';
         let currentZoomLevel = 1;
         const ZOOM_STEP = 0.1;
@@ -356,6 +474,8 @@
         const helpExampleFlowchart = document.getElementById('helpExampleFlowchart');
         const helpExampleClass = document.getElementById('helpExampleClass');
         const helpExampleGantt = document.getElementById('helpExampleGantt');
+        const helpExampleC4 = document.getElementById('helpExampleC4'); // Get the new element
+
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
         const zoomResetButton = document.getElementById('zoomResetButton');
@@ -371,7 +491,7 @@
         const codeEditor = CodeMirror.fromTextArea(document.getElementById('mermaidInput'), {
             lineNumbers: true,
             mode: "markdown",
-            theme: "material-darker",
+            theme: "material-darker", // Keep CodeMirror theme fixed for consistency regardless of app theme
             lineWrapping: true,
         });
         let initialCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
@@ -400,10 +520,35 @@
             }, duration);
         }
 
-        function initializeMermaid(theme, customColorValue = null) {
-            currentMermaidTheme = theme;
+        // Function to apply the CSS theme class to the body
+        function applyBodyTheme(themeName) {
+            document.body.classList.remove('light-theme', 'dark-theme');
+            if (themeName === 'dark' || (themeName === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.add('light-theme');
+            }
+        }
+
+        function getMermaidThemeForRendering(selectedTheme) {
+            if (selectedTheme === 'light') {
+                return 'default'; // Mermaid's default is light
+            } else if (selectedTheme === 'dark') {
+                return 'dark';
+            } else if (selectedTheme === 'system') {
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'default';
+            } else {
+                return selectedTheme; // neutral, forest, custom
+            }
+        }
+
+        function initializeMermaid(selectedTheme, customColorValue = null) {
+            currentSelectedTheme = selectedTheme; // Store the user's explicit selection
+            let mermaidTheme = getMermaidThemeForRendering(selectedTheme); // Get the actual mermaid theme based on selection
+            currentMermaidThemeForRendering = mermaidTheme; // Store the resolved mermaid theme
+
             let effectiveCustomColor = currentCustomColor;
-            if (theme === 'custom') {
+            if (selectedTheme === 'custom') {
                 if (customColorValue && isValidHexColor(customColorValue)) {
                     effectiveCustomColor = customColorValue; currentCustomColor = customColorValue;
                     if (customColorError) customColorError.classList.add('hidden');
@@ -411,28 +556,58 @@
                     if (customColorError) customColorError.classList.remove('hidden');
                 }
             }
-            let themeVariables = { fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333',};
-            if (theme === 'dark') { Object.assign(themeVariables, { background: '#333333', primaryTextColor: '#FFFFFF', lineColor: '#E0E0E0', actorBkg: '#555555', actorBorder: '#BBBBBB', noteBkg: '#444444', noteTextColor: '#FFFFFF', labelBoxBkgColor: '#4A5568', labelTextColor: '#FFFFFF', }); }
-            else if (theme === 'forest') { Object.assign(themeVariables, { background: '#2d382c', primaryTextColor: '#E6F5E4', lineColor: '#A2D49A', actorBkg: '#556B2F', actorBorder: '#A2D49A', noteBkg: '#4F5D43', noteTextColor: '#E6F5E4', labelBoxBkgColor: '#3E4C3C', labelTextColor: '#E6F5E4', }); }
-            else if (theme === 'custom') { Object.assign(themeVariables, { primaryColor: effectiveCustomColor, background: '#FFFFFF', primaryTextColor: '#212121', lineColor: effectiveCustomColor, actorBkg: effectiveCustomColor, actorTextColor: '#FFFFFF', actorBorder: effectiveCustomColor, participantBkg: '#F0F4F8', participantBorder: effectiveCustomColor, messageText: '#212121', noteBkg: '#F8F9FA', noteTextColor: '#212121', labelBoxBkgColor: effectiveCustomColor, labelTextColor: '#FFFFFF', }); }
+
+            let themeVariables = { fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333'};
+
+            // Apply mermaid.js specific theme variables
+            if (mermaidTheme === 'dark') { Object.assign(themeVariables, { background: '#333333', primaryTextColor: '#FFFFFF', lineColor: '#E0E0E0', actorBkg: '#555555', actorBorder: '#BBBBBB', noteBkg: '#444444', noteTextColor: '#FFFFFF', labelBoxBkgColor: '#4A5568', labelTextColor: '#FFFFFF', }); }
+            else if (mermaidTheme === 'forest') { Object.assign(themeVariables, { background: '#2d382c', primaryTextColor: '#E6F5E4', lineColor: '#A2D49A', actorBkg: '#556B2F', actorBorder: '#A2D49A', noteBkg: '#4F5D43', noteTextColor: '#E6F5E4', labelBoxBkgColor: '#3E4C3C', labelTextColor: '#E6F5E4', }); }
+            else if (mermaidTheme === 'custom') { // Custom theme variables based on effectiveCustomColor
+                Object.assign(themeVariables, {
+                    primaryColor: effectiveCustomColor, background: '#FFFFFF', primaryTextColor: '#212121',
+                    lineColor: effectiveCustomColor, actorBkg: effectiveCustomColor, actorTextColor: '#FFFFFF',
+                    actorBorder: effectiveCustomColor, participantBkg: '#F0F4F8', participantBorder: effectiveCustomColor,
+                    messageText: '#212121', noteBkg: '#F8F9FA', noteTextColor: '#212121', labelBoxBkgColor: effectiveCustomColor, labelTextColor: '#FFFFFF',
+                });
+            }
+            // 'default' and 'neutral' themes use a light background and dark text for diagram
             else { Object.assign(themeVariables, { background: '#FFFFFF', primaryTextColor: '#212121', lineColor: '#424242', actorBkg: '#ECEFF1', actorBorder: '#90A4AE', noteBkg: '#FFF9C4', noteTextColor: '#424242', labelBoxBkgColor: '#E8EAF6', labelTextColor: '#212121', }); }
-            if (mermaidOutputContainer) { mermaidOutputContainer.style.backgroundColor = (theme === 'dark' || theme === 'forest') ? '#2D3748' : '#F7FAFC'; }
+
 
             mermaid.initialize({
                 startOnLoad: false,
-                theme: (theme === 'custom') ? 'default' : theme,
+                theme: (mermaidTheme === 'custom') ? 'default' : mermaidTheme, // Mermaid.js doesn't have a 'custom' theme name
                 securityLevel: 'loose', // REVIEW THIS SETTING BASED ON YOUR SECURITY REQUIREMENTS
                 sequence: { diagramMarginX: 50, diagramMarginY: 10, actorMargin: 50, width: 150, height: 65, boxMargin: 10, boxTextMargin: 5, noteMargin: 10, messageMargin: 35, mirrorActors: true, bottomMarginAdj: 1, useMaxWidth: true, rightAngles: false, showSequenceNumbers: false },
                 themeVariables: themeVariables
             });
+
+            // Update the CSS variables for the main application UI
+            applyBodyTheme(selectedTheme);
+
+            // Special handling for mermaid output container background to match the overall theme better
+            // Mermaid.js internal rendering might not use CSS variables directly for SVG background
+            if (mermaidOutputContainer) {
+                if (selectedTheme === 'dark' || (selectedTheme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    mermaidOutputContainer.style.backgroundColor = '#222933'; // Dark background
+                } else if (selectedTheme === 'forest') {
+                     mermaidOutputContainer.style.backgroundColor = '#2d382c';
+                }
+                else {
+                    mermaidOutputContainer.style.backgroundColor = '#F7FAFC'; // Light background
+                }
+            }
         }
 
         if (currentYearSpan) currentYearSpan.textContent = new Date().getFullYear();
 
         function updateDefaultMermaidCodePlaceholder() {
              if (codeEditor) {
-                let themeNameForDefaultText = currentMermaidTheme;
-                if (currentMermaidTheme === 'custom') { themeNameForDefaultText = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`;}
+                let themeNameForDefaultText = currentSelectedTheme;
+                if (currentSelectedTheme === 'custom') { themeNameForDefaultText = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`;}
+                else if (currentSelectedTheme === 'system') {
+                    themeNameForDefaultText = `System (${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'})`;
+                }
                 const currentEditorValue = codeEditor.getValue();
                 const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
                 if (currentEditorValue.trim() === "" || themePlaceholderRegex.test(currentEditorValue)) {
@@ -442,26 +617,124 @@
                 }
             }
         }
+
+        // Theme Persistence
+        function saveThemePreference() {
+            try {
+                localStorage.setItem('graphixStudioTheme', currentSelectedTheme);
+                if (currentSelectedTheme === 'custom' && customColorInput && isValidHexColor(customColorInput.value)) {
+                    localStorage.setItem('graphixStudioCustomColor', customColorInput.value);
+                }
+            } catch (e) {
+                console.error("Error saving theme preference:", e);
+            }
+        }
+
+        function loadThemePreference() {
+            try {
+                const savedTheme = localStorage.getItem('graphixStudioTheme');
+                const savedCustomColor = localStorage.getItem('graphixStudioCustomColor');
+                if (savedTheme) {
+                    currentSelectedTheme = savedTheme;
+                }
+                if (savedCustomColor && isValidHexColor(savedCustomColor)) {
+                    currentCustomColor = savedCustomColor;
+                }
+            } catch (e) {
+                console.error("Error loading theme preference:", e);
+            }
+        }
+
+        // Initialize based on loaded preferences
+        loadThemePreference();
         if (customColorInput) customColorInput.value = currentCustomColor;
-        initializeMermaid(currentMermaidTheme, currentCustomColor);
+        if (themeSelector) themeSelector.value = currentSelectedTheme;
+
+        // Immediately apply the theme when the DOM is ready
+        initializeMermaid(currentSelectedTheme, currentCustomColor);
+        updateDefaultMermaidCodePlaceholder();
+
 
         function setupDropdown(button, dropdown) {
             if (!button || !dropdown) return;
             button.addEventListener('click', (event) => {
                 event.stopPropagation();
-                const isCurrentlyVisible = dropdown.style.display === 'block';
+                const isCurrentlyVisible = dropdown.classList.contains('show'); // Check for 'show' class
                 document.querySelectorAll('.action-dropdown').forEach(otherDropdown => {
-                    if (otherDropdown !== dropdown) { otherDropdown.style.display = 'none'; }
+                    // Ensure 'display: none' is immediately applied if transitioning out
+                    if (otherDropdown !== dropdown && otherDropdown.classList.contains('show')) {
+                        otherDropdown.classList.remove('show');
+                        // Use a short timeout to apply display: none after transition starts
+                        setTimeout(() => { otherDropdown.style.display = 'none'; }, 200); // Matches transition duration
+                    }
                 });
-                dropdown.style.display = isCurrentlyVisible ? 'none' : 'block';
+
+                if (isCurrentlyVisible) {
+                    dropdown.classList.remove('show');
+                    // Use a short timeout to apply display: none after transition starts
+                    setTimeout(() => { dropdown.style.display = 'none'; }, 200); // Matches transition duration
+                } else {
+                    dropdown.style.display = 'block'; // Ensure it's visible BEFORE adding 'show' for transition
+                    // Force reflow to ensure display: block is processed before opacity/transform transition
+                    dropdown.offsetWidth; // Trigger reflow
+                    dropdown.classList.add('show');
+                }
             });
         }
         setupDropdown(topLeftMenuButton, topLeftDropdown);
         setupDropdown(exportButton, exportDropdown);
         document.addEventListener('click', (event) => {
-            if (topLeftDropdown && topLeftMenuButton && !topLeftMenuButton.contains(event.target) && !topLeftDropdown.contains(event.target)) { topLeftDropdown.style.display = 'none';}
-            if (exportDropdown && exportButton && !exportButton.contains(event.target) && !exportDropdown.contains(event.target)) { exportDropdown.style.display = 'none'; }
+            // Close dropdowns if click is outside of them
+            if (topLeftDropdown && !topLeftDropdown.contains(event.target) && !topLeftMenuButton.contains(event.target)) {
+                topLeftDropdown.classList.remove('show');
+                setTimeout(() => { topLeftDropdown.style.display = 'none'; }, 200);
+            }
+            if (exportDropdown && !exportDropdown.contains(event.target) && !exportButton.contains(event.target)) {
+                exportDropdown.classList.remove('show');
+                setTimeout(() => { exportDropdown.style.display = 'none'; }, 200);
+            }
         });
+
+        // Setup for modals
+        function setupModal(openButton, modalElement, closeButton) {
+            if (!openButton || !modalElement || !closeButton) return;
+
+            openButton.addEventListener('click', () => {
+                modalElement.style.display = 'flex'; // Make it flex BEFORE adding 'show'
+                // Force reflow
+                modalElement.offsetWidth;
+                modalElement.classList.add('show');
+                // Close any open dropdowns when a modal opens
+                document.querySelectorAll('.action-dropdown').forEach(dropdown => {
+                    dropdown.classList.remove('show');
+                    setTimeout(() => { dropdown.style.display = 'none'; }, 200);
+                });
+            });
+
+            closeButton.addEventListener('click', () => {
+                modalElement.classList.remove('show');
+                setTimeout(() => { modalElement.style.display = 'none'; }, 300); // Matches modal transition duration
+            });
+
+            // Close modal on escape key
+            window.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape' && modalElement.classList.contains('show')) {
+                    modalElement.classList.remove('show');
+                    setTimeout(() => { modalElement.style.display = 'none'; }, 300);
+                }
+            });
+
+            // Close modal when clicking outside
+            modalElement.addEventListener('click', (event) => {
+                if (event.target === modalElement) {
+                    modalElement.classList.remove('show');
+                    setTimeout(() => { modalElement.style.display = 'none'; }, 300);
+                }
+            });
+        }
+        setupModal(showHelpButton, helpModal, closeHelpModalButton);
+        setupModal(showAboutButton, aboutModal, closeAboutModalButton);
+
 
         if (themeSelector) {
             themeSelector.addEventListener('change', (event) => {
@@ -476,6 +749,7 @@
                 }
                 renderDiagram();
                 updateDefaultMermaidCodePlaceholder();
+                saveThemePreference();
             });
         }
         if (customColorInput) {
@@ -496,6 +770,7 @@
                     if (themeSelector && themeSelector.value === 'custom') {
                         initializeMermaid('custom', finalColor); renderDiagram(); updateDefaultMermaidCodePlaceholder();
                     } else { currentCustomColor = finalColor; }
+                    saveThemePreference(); // Save on change, not just input
                 } else {
                      if (customColorError) customColorError.classList.remove('hidden');
                      if (themeSelector && themeSelector.value === 'custom') {
@@ -506,11 +781,23 @@
             });
         }
 
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (currentSelectedTheme === 'system') {
+                console.log("System theme changed, re-initializing Mermaid and re-rendering.");
+                initializeMermaid('system', currentCustomColor);
+                renderDiagram();
+                updateDefaultMermaidCodePlaceholder();
+            }
+        });
+
+
         const helpExamples = {
             sequence: `sequenceDiagram\n    autonumber\n    actor User\n    participant Frontend\n    participant Backend API\n    User->>Frontend: Clicks "Submit Order"\n    Frontend->>Backend API: POST /orders {data}\n    activate Backend API\n    Backend API->>Backend API: Validate data\n    Backend API->>Database: Save order\n    Database-->>Backend API: Order Confirmed (ID: 123)\n    deactivate Backend API\n    Backend API-->>Frontend: {orderId: 123, status: "success"}\n    Frontend-->>User: Shows "Order Successful!" message\n    Note right of User: User is happy!`,
             flowchart: `graph TD\n    A[Start] --> B{Is it sunny?};\n    B -- Yes --> C[Go to beach];\n    B -- No --> D[Read a book];\n    C --> E[End];\n    D --> E;`,
-            class: `classDiagram\n    Animal <|-- Duck\n    Animal <|-- Fish\n    Animal <|-- Zebra\n    Animal : +int age\n    Animal : +String gender\n    Animal: +isMammal()\n    Animal: +mate()\n    class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n    }`,
-            gantt: `gantt\n    title Project Timeline Example\n    dateFormat  YYYY-MM-DD\n    section Planning Phase\n    Market Research     :a1, 2024-01-01, 7d\n    Define Requirements :after a1, 5d\n    section Development Phase\n    Feature X Dev       :crit, active, 2024-01-15, 10d\n    Feature Y Dev       :2024-01-18, 12d\n    Integration         :after Feature X Dev, 5d\n    section Testing\n    QA Testing          :after Integration, 7d`
+            class: `classDiagram\n    Animal <|-- Duck\n    Animal <|-- Fish\n    Animal <|-- Zebra\n    Animal : +int age\n    Animal : +String gender\n    Animal: +isMammal()\n    Animal: +mate()\n    class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n    }\n    class Dog{\n      +String breed\n      +bark()\n    }`,
+            gantt: `gantt\n    title Project Timeline Example\n    dateFormat  YYYY-MM-DD\n    section Planning Phase\n    Market Research     :a1, 2024-01-01, 7d\n    Define Requirements :after a1, 5d\n    Feature X Dev       :crit, active, 2024-01-15, 10d\n    Feature Y Dev       :2024-01-18, 12d\n    Integration         :after Feature X Dev, 5d\n    section Testing\n    QA Testing          :after Integration, 7d`,
+            c4: `C4Context\n    title System Context diagram for Internet Banking System\n    Person(customer, "Banking Customer", "A customer of the bank, with a bank account.")\n    System(internetBanking, "Internet Banking System", "Allows customers to view their bank accounts and make payments.")\n    System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information.")\n    System_Ext(email, "E-mail System", "The internal Microsoft Exchange e-mail system.")\n    Rel(customer, internetBanking, "Uses")\n    Rel(internetBanking, mainframe, "Uses", "HTTPS")\n    Rel_Back(customer, email, "Sends e-mails to")`
         };
         if (showHelpButton && helpModal && closeHelpModalButton) {
             showHelpButton.addEventListener('click', () => {
@@ -518,12 +805,10 @@
                 if (helpExampleFlowchart) helpExampleFlowchart.textContent = helpExamples.flowchart;
                 if (helpExampleClass) helpExampleClass.textContent = helpExamples.class;
                 if (helpExampleGantt) helpExampleGantt.textContent = helpExamples.gantt;
-                if (helpModal) helpModal.classList.remove('hidden');
-                if (topLeftDropdown) topLeftDropdown.style.display = 'none';
+                if (helpExampleC4) helpExampleC4.textContent = helpExamples.c4; // Assign C4 example
+                // helpModal.classList.add('show') is now handled by setupModal
             });
-            closeHelpModalButton.addEventListener('click', () => { if (helpModal) helpModal.classList.add('hidden'); });
-            window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && helpModal && !helpModal.classList.contains('hidden')) helpModal.classList.add('hidden'); });
-            if (helpModal) { helpModal.addEventListener('click', (event) => { if (event.target === helpModal) helpModal.classList.add('hidden'); }); }
+            // closeHelpModalButton and modal click listeners are now handled by setupModal
         }
         if (showAboutButton && aboutModal && closeAboutModalButton) {
             showAboutButton.addEventListener('click', () => {
@@ -540,12 +825,9 @@
                     aboutSupportEmail.textContent = APP_CONFIG.supportEmail;
                     aboutSupportEmail.href = `mailto:${APP_CONFIG.supportEmail}`;
                 }
-                aboutModal.classList.remove('hidden');
-                if (topLeftDropdown) topLeftDropdown.style.display = 'none';
+                // aboutModal.classList.add('show') is now handled by setupModal
             });
-            closeAboutModalButton.addEventListener('click', () => aboutModal.classList.add('hidden'));
-             window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && aboutModal && !aboutModal.classList.contains('hidden')) { aboutModal.classList.add('hidden'); } });
-            if (aboutModal) { aboutModal.addEventListener('click', (event) => { if (event.target === aboutModal) aboutModal.classList.add('hidden'); }); }
+            // closeAboutModalButton and modal click listeners are now handled by setupModal
         }
 
         function updateDownloadButtonsState(enable) {
@@ -578,12 +860,16 @@
                 lastRenderedCode = "";
                 codeChangedSinceLastRender = false; return;
             }
-            let themeNameForTextInDiagram = currentMermaidTheme;
-            if (currentMermaidTheme === 'custom') { themeNameForTextInDiagram = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`; }
+            let themeNameForTextInDiagram = currentSelectedTheme;
+            if (currentSelectedTheme === 'custom') { themeNameForTextInDiagram = `Custom (${customColorInput && isValidHexColor(customColorInput.value) ? customColorInput.value : currentCustomColor})`; }
+            else if (currentSelectedTheme === 'system') {
+                themeNameForTextInDiagram = `System (${window.matchMedia('(prefers-color-scheme: dark)').matches ? 'Dark' : 'Light'})`;
+            }
+
             const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
             if (themePlaceholderRegex.test(definition)) { definition = definition.replace(themePlaceholderRegex, `Current theme: ${themeNameForTextInDiagram}`);}
             try {
-                const selectedThemeValue = themeSelector ? themeSelector.value : 'default';
+                const selectedThemeValue = themeSelector ? themeSelector.value : 'system'; // Use 'system' as default for resolution
                 const colorForCustomTheme = (selectedThemeValue === 'custom' && customColorInput && isValidHexColor(customColorInput.value)) ? customColorInput.value : currentCustomColor;
                 initializeMermaid(selectedThemeValue, colorForCustomTheme);
                 await mermaid.parse(definition);
@@ -646,6 +932,17 @@
             document.addEventListener('mousemove', (e) => { if (!isPanning || !mermaidOutputContainer.classList.contains('grabbing')) return; e.preventDefault(); svgTranslate.x = e.clientX - panStartCoords.x; svgTranslate.y = e.clientY - panStartCoords.y; applyZoom(); });
             document.addEventListener('mouseup', (e) => { if (isPanning) { isPanning = false; if (mermaidOutputContainer) mermaidOutputContainer.classList.remove('grabbing'); } });
             document.addEventListener('mouseleave', (e) => { if (isPanning) { isPanning = false; if (mermaidOutputContainer) mermaidOutputContainer.classList.remove('grabbing'); } });
+            mermaidOutputContainer.addEventListener('wheel', (e) => {
+                if (e.ctrlKey || e.metaKey) { // Zoom with Ctrl/Cmd + scroll wheel
+                    e.preventDefault();
+                    const scaleAmount = e.deltaY * -0.001; // Adjust sensitivity
+                    const newZoom = parseFloat((currentZoomLevel + scaleAmount).toFixed(2));
+                    if (newZoom >= MIN_ZOOM && newZoom <= MAX_ZOOM) {
+                        currentZoomLevel = newZoom;
+                        applyZoom();
+                    }
+                }
+            }, { passive: false }); // Use passive: false to allow preventDefault
             mermaidOutputContainer.addEventListener('dragstart', (e) => e.preventDefault());
         }
 
@@ -674,7 +971,8 @@
                 if (downloadCurrentDiagramCode(baseName)) {
                      showNotification("Diagram code (.graphix) downloaded!");
                 }
-                if (topLeftDropdown) topLeftDropdown.style.display = 'none';
+                if (topLeftDropdown) topLeftDropdown.classList.remove('show'); // Close dropdown
+                setTimeout(() => { topLeftDropdown.style.display = 'none'; }, 200); // Hide after close
             });
         }
 
@@ -684,7 +982,8 @@
             fileInput.style.display = 'none';
             document.body.appendChild(fileInput);
             importDiagramButton.addEventListener('click', () => {
-                if (topLeftDropdown) topLeftDropdown.style.display = 'none';
+                if (topLeftDropdown) topLeftDropdown.classList.remove('show'); // Close dropdown
+                setTimeout(() => { topLeftDropdown.style.display = 'none'; }, 200); // Hide after close
                 fileInput.click();
             });
             fileInput.addEventListener('change', (event) => {
@@ -785,15 +1084,18 @@
 
         if (downloadPngImageOnlyButton) downloadPngImageOnlyButton.addEventListener('click', async () => {
             if (await downloadImageFile('png')) showNotification('PNG image downloaded!');
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
         if (downloadPdfImageOnlyButton) downloadPdfImageOnlyButton.addEventListener('click', async () => {
             if (await downloadImageFile('pdf')) showNotification('PDF document downloaded!');
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
         if (downloadSvgImageOnlyButton) downloadSvgImageOnlyButton.addEventListener('click', async () => {
             if (await downloadImageFile('svg')) showNotification('SVG diagram downloaded!');
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
         if (downloadPngWithCodeButton) downloadPngWithCodeButton.addEventListener('click', async () => {
             const baseFileName = await downloadImageFile('png');
@@ -801,7 +1103,8 @@
                 if(downloadCurrentDiagramCode(baseFileName)) showNotification('PNG image and Code file downloaded!');
                 else showNotification('PNG image downloaded, but code download failed.', 3000);
             }
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
         if (downloadPdfWithCodeButton) downloadPdfWithCodeButton.addEventListener('click', async () => {
             const baseFileName = await downloadImageFile('pdf');
@@ -809,7 +1112,8 @@
                 if(downloadCurrentDiagramCode(baseFileName)) showNotification('PDF document and Code file downloaded!');
                  else showNotification('PDF document downloaded, but code download failed.', 3000);
             }
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
         if (downloadSvgWithCodeButton) downloadSvgWithCodeButton.addEventListener('click', async () => {
             const baseFileName = await downloadImageFile('svg');
@@ -817,7 +1121,8 @@
                 if(downloadCurrentDiagramCode(baseFileName)) showNotification('SVG diagram and Code file downloaded!');
                 else showNotification('SVG diagram downloaded, but code download failed.', 3000);
             }
-            if (exportDropdown) exportDropdown.style.display = 'none';
+            if (exportDropdown) exportDropdown.classList.remove('show'); // Close dropdown
+            setTimeout(() => { exportDropdown.style.display = 'none'; }, 200); // Hide after close
         });
 
         async function getPngBlobFromDiagram() {
@@ -987,8 +1292,8 @@
 
         if (codeEditor.getValue().trim()) { renderDiagram(false); }
         else if (mermaidOutput) { mermaidOutput.innerHTML = '<p class="text-gray-400 text-center mt-10">Enter diagram code in the left panel and click "Render Diagram".</p>'; }
-        if (themeSelector) themeSelector.value = currentMermaidTheme;
-        if (currentMermaidTheme === 'custom' && customColorInputContainer) {
+        if (themeSelector) themeSelector.value = currentSelectedTheme;
+        if (currentSelectedTheme === 'custom' && customColorInputContainer) {
             customColorInputContainer.classList.remove('hidden');
         }
     });
