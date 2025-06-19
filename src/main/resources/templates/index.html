@@ -354,6 +354,16 @@
             <pre><code id="helpExampleGantt"></code></pre>
             <h4>C4 Model Examples:</h4>
             <pre><code id="helpExampleC4"></code></pre>
+            <!-- NEW DIAGRAM EXAMPLES START HERE -->
+            <h4>State Diagram Examples:</h4>
+            <pre><code id="helpExampleState"></code></pre>
+            <h4>Pie Chart Examples:</h4>
+            <pre><code id="helpExamplePie"></code></pre>
+            <h4>Entity Relationship Diagram Examples:</h4>
+            <pre><code id="helpExampleEr"></code></pre>
+            <h4>User Journey Diagram Examples:</h4>
+            <pre><code id="helpExampleJourney"></code></pre>
+            <!-- NEW DIAGRAM EXAMPLES END HERE -->
         </div>
     </div>
 </div>
@@ -388,7 +398,7 @@
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
             appName: "Graphix Studio",
-            version: "1.0.7", // Incremented version for this update
+            version: "1.0.8", // Incremented version for this update
             aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
             supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
             // Reminder: Email address is visible in client-side code.
@@ -474,7 +484,12 @@
         const helpExampleFlowchart = document.getElementById('helpExampleFlowchart');
         const helpExampleClass = document.getElementById('helpExampleClass');
         const helpExampleGantt = document.getElementById('helpExampleGantt');
-        const helpExampleC4 = document.getElementById('helpExampleC4'); // Get the new element
+        const helpExampleC4 = document.getElementById('helpExampleC4');
+        // Get new elements
+        const helpExampleState = document.getElementById('helpExampleState');
+        const helpExamplePie = document.getElementById('helpExamplePie');
+        const helpExampleEr = document.getElementById('helpExampleEr');
+        const helpExampleJourney = document.getElementById('helpExampleJourney');
 
         const zoomInButton = document.getElementById('zoomInButton');
         const zoomOutButton = document.getElementById('zoomOutButton');
@@ -797,7 +812,11 @@
             flowchart: `graph TD\n    A[Start] --> B{Is it sunny?};\n    B -- Yes --> C[Go to beach];\n    B -- No --> D[Read a book];\n    C --> E[End];\n    D --> E;`,
             class: `classDiagram\n    Animal <|-- Duck\n    Animal <|-- Fish\n    Animal <|-- Zebra\n    Animal : +int age\n    Animal : +String gender\n    Animal: +isMammal()\n    Animal: +mate()\n    class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n    }\n    class Dog{\n      +String breed\n      +bark()\n    }`,
             gantt: `gantt\n    title Project Timeline Example\n    dateFormat  YYYY-MM-DD\n    section Planning Phase\n    Market Research     :a1, 2024-01-01, 7d\n    Define Requirements :after a1, 5d\n    Feature X Dev       :crit, active, 2024-01-15, 10d\n    Feature Y Dev       :2024-01-18, 12d\n    Integration         :after Feature X Dev, 5d\n    section Testing\n    QA Testing          :after Integration, 7d`,
-            c4: `C4Context\n    title System Context diagram for Internet Banking System\n    Person(customer, "Banking Customer", "A customer of the bank, with a bank account.")\n    System(internetBanking, "Internet Banking System", "Allows customers to view their bank accounts and make payments.")\n    System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information.")\n    System_Ext(email, "E-mail System", "The internal Microsoft Exchange e-mail system.")\n    Rel(customer, internetBanking, "Uses")\n    Rel(internetBanking, mainframe, "Uses", "HTTPS")\n    Rel_Back(customer, email, "Sends e-mails to")`
+            c4: `C4Context\n    title System Context diagram for Internet Banking System\n    Person(customer, "Banking Customer", "A customer of the bank, with a bank account.")\n    System(internetBanking, "Internet Banking System", "Allows customers to view their bank accounts and make payments.")\n    System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information.")\n    System_Ext(email, "E-mail System", "The internal Microsoft Exchange e-mail system.")\n    Rel(customer, internetBanking, "Uses")\n    Rel(internetBanking, mainframe, "Uses", "HTTPS")\n    Rel_Back(customer, email, "Sends e-mails to")`,
+            state: `stateDiagram-v2\n    [*] --> Still\n    Still --> [*]\n    Still --> Moving: EvtMovement\n    Moving --> Still: EvtStopped\n    Moving --> Crash: EvtCrash\n    Crash --> [*]`,
+            pie: `pie title A Simple Pie Chart\n    "Dogs" : 386\n    "Cats" : 85\n    "Birds" : 15\n    "Fish" : 20`,
+            er: `erDiagram\n    CUSTOMER ||--o{ ORDER : places\n    ORDER ||--|{ LINE-ITEM : contains\n    PRODUCT }|--o{ LINE-ITEM : constitutes\n    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses`,
+            journey: `journey\n    title My working day\n    section Go to work\n      Make tea: 5: start, a1\n      Go downstairs: 3: a2\n      Read email: 10: a3\n    section Work\n      Write code: 20: a4\n      Review code: 10: a5\n      Take a break: 5: a6\n    section Go home\n      Go upstairs: 3: a7\n      Prepare dinner: 12: a8`
         };
         if (showHelpButton && helpModal && closeHelpModalButton) {
             showHelpButton.addEventListener('click', () => {
@@ -806,9 +825,11 @@
                 if (helpExampleClass) helpExampleClass.textContent = helpExamples.class;
                 if (helpExampleGantt) helpExampleGantt.textContent = helpExamples.gantt;
                 if (helpExampleC4) helpExampleC4.textContent = helpExamples.c4; // Assign C4 example
-                // helpModal.classList.add('show') is now handled by setupModal
+                if (helpExampleState) helpExampleState.textContent = helpExamples.state; // Assign new example
+                if (helpExamplePie) helpExamplePie.textContent = helpExamples.pie;     // Assign new example
+                if (helpExampleEr) helpExampleEr.textContent = helpExamples.er;       // Assign new example
+                if (helpExampleJourney) helpExampleJourney.textContent = helpExamples.journey; // Assign new example
             });
-            // closeHelpModalButton and modal click listeners are now handled by setupModal
         }
         if (showAboutButton && aboutModal && closeAboutModalButton) {
             showAboutButton.addEventListener('click', () => {
@@ -825,9 +846,7 @@
                     aboutSupportEmail.textContent = APP_CONFIG.supportEmail;
                     aboutSupportEmail.href = `mailto:${APP_CONFIG.supportEmail}`;
                 }
-                // aboutModal.classList.add('show') is now handled by setupModal
             });
-            // closeAboutModalButton and modal click listeners are now handled by setupModal
         }
 
         function updateDownloadButtonsState(enable) {
