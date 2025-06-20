@@ -3,7 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphix Studio - Online Diagram Editor</title>
+    <title>Archiviz - Online Diagram Editor</title>
+
+    <!-- Content Security Policy (CSP) for enhanced security -->
+    <!-- This CSP is configured to allow scripts, styles, images, and fonts from 'self' (your domain)
+         and from the specified CDNs. 'unsafe-inline' and 'unsafe-eval' are included for CodeMirror
+         and inline scripts/styles, which should ideally be removed in a highly secure production environment
+         by externalizing all JS/CSS. -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com 'unsafe-inline' 'unsafe-eval';
+        style-src 'self' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        img-src 'self' data: https://placehold.co;
+        font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        connect-src 'self';
+        object-src 'none';
+        frame-ancestors 'none';
+        block-all-mixed-content;
+    ">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -275,12 +292,12 @@
         <!-- Left side: Logo -->
         <div class="flex items-center">
             <div class="mr-4">
-                <img src="https://placehold.co/40x40/6366f1/FFFFFF?text=Logo" alt="Graphix Studio Logo" class="h-10 w-10 rounded-full">
+                <img src="https://placehold.co/40x40/6366f1/FFFFFF?text=Logo" alt="Archiviz Logo" class="h-10 w-10 rounded-full">
             </div>
         </div>
 
         <!-- Center: Title -->
-        <h1 class="text-xl md:text-2xl font-bold">Graphix Studio</h1>
+        <h1 class="text-xl md:text-2xl font-bold">Archiviz</h1>
 
         <!-- Right side: Buy Me A Coffee, then Burger Menu -->
         <div class="flex items-center space-x-2">
@@ -306,8 +323,8 @@
                         </select>
                     </div>
                     <button id="showAdvancedThemeEditorButton" class="dropdown-item"><i class="fas fa-palette mr-2"></i> Advanced Theme Editor</button>
-                    <button id="importDiagramButton" class="dropdown-item"><i class="fas fa-file-import mr-2"></i> Import Code (.graphix)</button>
-                    <button id="downloadDiagramCodeButton" class="dropdown-item"><i class="fas fa-file-code mr-2"></i> Download Code (.graphix)</button>
+                    <button id="importDiagramButton" class="dropdown-item"><i class="fas fa-file-import mr-2"></i> Import Code (.archiviz)</button>
+                    <!-- Removed: <button id="downloadDiagramCodeButton" class="dropdown-item"><i class="fas fa-file-code mr-2"></i> Download Code (.graphix)</button> -->
                     <div class="dropdown-divider"></div>
 
                     <!-- Export options now trigger the new modal -->
@@ -315,7 +332,7 @@
                     <div class="dropdown-divider"></div>
 
                     <button id="showHelpButton" class="dropdown-item"><i class="fas fa-question-circle mr-2"></i> Syntax & Examples</button>
-                    <button id="showAboutButton" class="dropdown-item"><i class="fas fa-info-circle mr-2"></i> About Graphix Studio</button>
+                    <button id="showAboutButton" class="dropdown-item"><i class="fas fa-info-circle mr-2"></i> About Archiviz</button>
                 </div>
             </div>
         </div>
@@ -375,7 +392,7 @@
 </main>
 
 <footer class="bg-gray-800 text-white text-center p-3 text-sm mt-auto flex-shrink-0">
-    <p>&copy; <span id="currentYear"></span> Graphix Studio. Advanced Diagramming Solutions.</p>
+    <p>&copy; <span id="currentYear"></span> Archiviz. Architectural Visualization Solutions.</p>
 </footer>
 
 <div id="helpModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden">
@@ -511,15 +528,15 @@
                 <div class="dropdown-divider"></div>
                 <label class="inline-flex items-center">
                     <input type="checkbox" name="exportOption" value="png-code" class="form-checkbox text-indigo-600 h-5 w-5">
-                    <span class="ml-2 text-gray-700">PNG + Code (.graphix)</span>
+                    <span class="ml-2 text-gray-700">PNG + Code (.archiviz)</span>
                 </label>
                 <label class="inline-flex items-center">
                     <input type="checkbox" name="exportOption" value="pdf-code" class="form-checkbox text-indigo-600 h-5 w-5">
-                    <span class="ml-2 text-gray-700">PDF + Code (.graphix)</span>
+                    <span class="ml-2 text-gray-700">PDF + Code (.archiviz)</span>
                 </label>
                 <label class="inline-flex items-center">
                     <input type="checkbox" name="exportOption" value="svg-code" class="form-checkbox text-indigo-600 h-5 w-5">
-                    <span class="ml-2 text-gray-700">SVG + Code (.graphix)</span>
+                    <span class="ml-2 text-gray-700">SVG + Code (.archiviz)</span>
                 </label>
             </div>
 
@@ -535,7 +552,7 @@
 <div id="aboutModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center hidden">
     <div class="bg-white p-5 md:p-8 rounded-lg shadow-xl w-11/12 md:max-w-lg max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
-            <h3 id="aboutModalTitle" class="text-xl font-semibold text-gray-800">About Graphix Studio</h3>
+            <h3 id="aboutModalTitle" class="text-xl font-semibold text-gray-800">About Archiviz</h3>
             <button id="closeAboutModal" class="text-gray-600 hover:text-gray-900 text-2xl" aria-label="Close about modal">&times;</button>
         </div>
         <div class="about-content text-sm text-gray-700 space-y-3">
@@ -561,11 +578,10 @@
     document.addEventListener('DOMContentLoaded', () => {
         // --- Configuration Object (Simulates a properties file) ---
         const APP_CONFIG = {
-            appName: "Graphix Studio",
-            version: "1.0.14", // Incremented version for this update
-            aboutDescription: "Graphix Studio is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.",
-            supportContactUrl: "<TBD>", // Reminder: Update TBD with a real URL if applicable.
-            // Reminder: Email address is visible in client-side code.
+            appName: "Archiviz", // Updated to Archiviz
+            version: "1.0.15",
+            aboutDescription: "Archiviz is an intuitive online editor for creating and visualizing diagrams from text-based syntax. It leverages the power of Mermaid.js to render a wide variety of diagrams directly in your browser.", // Updated description
+            supportContactUrl: "<TBD>",
             supportEmail: "abdulwaheed18@gmail.com",
             autoRenderIntervalSeconds: 5,
             defaultDiagramCode: `sequenceDiagram
@@ -624,8 +640,8 @@
     opt Optional Feature
         User->>Frontend: Clicks 'Help'
         Frontend-->>User: Show help content
-    end`, // Expanded default diagram code
-            examplesPageUrl: "examples.html" // New: Path to the detailed examples page
+    end`,
+            examplesPageUrl: "examples.html"
         };
 
         document.title = `${APP_CONFIG.appName} - Online Diagram Editor`;
@@ -635,15 +651,14 @@
         if (autoRenderLabel) autoRenderLabel.textContent = `Auto-render (${APP_CONFIG.autoRenderIntervalSeconds}s)`;
 
 
-        const { jsPDF } = window.jspdf || {}; // Ensure jsPDF is accessed after its script tag
+        const { jsPDF } = window.jspdf || {};
         if (!jsPDF) {
             console.error("jsPDF not loaded! PDF download will not be available.");
         }
 
-        let currentSelectedTheme = 'system'; // Stores 'system', 'light', 'dark', 'neutral'
-        let currentMermaidThemeForRendering = 'default'; // Stores 'default', 'dark', 'neutral' for Mermaid.js
+        let currentSelectedTheme = 'system';
+        let currentMermaidThemeForRendering = 'default';
 
-        // Custom theme variables (these will now be applied by the Advanced Theme Editor modal)
         let customThemeVariables = {
             primaryColor: '#00AEEF',
             background: '#FFFFFF',
@@ -688,12 +703,10 @@
         const topLeftDropdown = document.getElementById('topLeftDropdown');
         const themeSelector = document.getElementById('themeSelector');
 
-        // Advanced Custom Theme Editor elements
         const showAdvancedThemeEditorButton = document.getElementById('showAdvancedThemeEditorButton');
         const advancedThemeModal = document.getElementById('advancedThemeModal');
         const closeAdvancedThemeModalButton = document.getElementById('closeAdvancedThemeModal');
 
-        // Export Options Modal elements
         const showExportOptionsModalButton = document.getElementById('showExportOptionsModalButton');
         const exportOptionsModal = document.getElementById('exportOptionsModal');
         const closeExportOptionsModalButton = document.getElementById('closeExportOptionsModal');
@@ -701,7 +714,6 @@
         const downloadSelectedExportsButton = document.getElementById('downloadSelectedExportsButton');
 
 
-        // Color Picker and Text Input pairs
         const colorInputs = {
             primaryColor: { picker: document.getElementById('customPrimaryColorPicker'), text: document.getElementById('customPrimaryColorInput'), error: document.getElementById('customPrimaryColorError') },
             background: { picker: document.getElementById('customBackgroundColorPicker'), text: document.getElementById('customBackgroundColorInput'), error: document.getElementById('customBackgroundColorError') },
@@ -716,7 +728,8 @@
         const showAboutButton = document.getElementById('showAboutButton');
 
         const importDiagramButton = document.getElementById('importDiagramButton');
-        const downloadDiagramCodeButton = document.getElementById('downloadDiagramCodeButton');
+        // Removed `downloadDiagramCodeButton` as it's no longer needed in the JavaScript global scope
+        // const downloadDiagramCodeButton = document.getElementById('downloadDiagramCodeButton');
 
 
         const copyCodeButton = document.getElementById('copyCodeButton');
@@ -755,11 +768,16 @@
         const codeEditor = CodeMirror.fromTextArea(document.getElementById('mermaidInput'), {
             lineNumbers: true,
             mode: "markdown",
-            theme: "material-darker", // Keep CodeMirror theme fixed for consistency regardless of app theme
+            theme: "material-darker",
             lineWrapping: true,
         });
-        let initialCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
-        codeEditor.setValue(initialCode);
+        const savedCode = localStorage.getItem('graphixStudioLastDiagramCode');
+        if (savedCode) {
+            codeEditor.setValue(savedCode);
+        } else {
+            let initialCode = APP_CONFIG.defaultDiagramCode.replace("Welcome to Graphix Studio!", `Welcome to ${APP_CONFIG.appName}!`);
+            codeEditor.setValue(initialCode);
+        }
 
          setTimeout(() => {
             const cmElement = document.querySelector('.CodeMirror');
@@ -784,7 +802,6 @@
             }, duration);
         }
 
-        // Function to apply the CSS theme class to the body
         function applyBodyTheme(themeName) {
             document.body.classList.remove('light-theme', 'dark-theme');
             if (themeName === 'dark' || (themeName === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -796,7 +813,7 @@
 
         function getMermaidThemeForRendering(selectedTheme) {
             if (selectedTheme === 'light') {
-                return 'default'; // Mermaid's default is light
+                return 'default';
             } else if (selectedTheme === 'dark') {
                 return 'dark';
             } else if (selectedTheme === 'system') {
@@ -813,44 +830,43 @@
             let mermaidTheme = getMermaidThemeForRendering(selectedTheme);
             currentMermaidThemeForRendering = mermaidTheme;
 
-            // Updated professional color palettes for themes
             let themeVariables = { fontFamily: '"Inter", sans-serif', fontSize: '16px', sequenceNumberColor: '#333333'};
 
             if (mermaidTheme === 'dark') {
                 Object.assign(themeVariables, {
-                    background: '#2C3E50', // Dark Slate Blue
-                    primaryTextColor: '#E0E0E0', // Light Gray
-                    lineColor: '#7F8C8D', // Asbestos
-                    actorBkg: '#34495E', // Wet Asphalt
-                    actorBorder: '#95A5A6', // Concrete
-                    noteBkg: '#3D566E', // Darker Blue-Gray
+                    background: '#2C3E50',
+                    primaryTextColor: '#E0E0E0',
+                    lineColor: '#7F8C8D',
+                    actorBkg: '#34495E',
+                    actorBorder: '#95A5A6',
+                    noteBkg: '#3D566E',
                     noteTextColor: '#E0E0E0',
-                    labelBoxBkgColor: '#4A617A', // Blue-Gray
+                    labelBoxBkgColor: '#4A617A',
                     labelTextColor: '#FFFFFF',
                 });
             } else if (mermaidTheme === 'neutral') {
                  Object.assign(themeVariables, {
-                    background: '#F0F3F5', // Light Blue-Gray
-                    primaryTextColor: '#34495E', // Wet Asphalt
-                    lineColor: '#7F8C8D', // Asbestos
-                    actorBkg: '#ECF0F1', // Clouds
-                    actorBorder: '#BDC3C7', // Silver
-                    noteBkg: '#DCE4E8', // Lighter Blue-Gray
+                    background: '#F0F3F5',
+                    primaryTextColor: '#34495E',
+                    lineColor: '#7F8C8D',
+                    actorBkg: '#ECF0F1',
+                    actorBorder: '#BDC3C7',
+                    noteBkg: '#DCE4E8',
                     noteTextColor: '#34495E',
-                    labelBoxBkgColor: '#CFD8DC', // Lighter Slate Gray
-                    labelTextColor: '#2C3E50', // Dark Slate Blue
+                    labelBoxBkgColor: '#CFD8DC',
+                    labelTextColor: '#2C3E50',
                 });
             } else { // 'default' (light) - Updated to black borders/text and white background
                 Object.assign(themeVariables, {
-                    background: '#FFFFFF', // White background
-                    primaryTextColor: '#000000', // Black text
-                    lineColor: '#000000', // Black lines
-                    actorBkg: '#E0F2F7', // Light Cyan (can be adjusted if needed)
-                    actorBorder: '#000000', // Black actor borders
-                    noteBkg: '#FFFDE7', // Creamy Yellow (can be adjusted if needed)
-                    noteTextColor: '#000000', // Black note text
-                    labelBoxBkgColor: '#E1F5FE', // Light Blue (can be adjusted if needed)
-                    labelTextColor: '#000000', // Black label text
+                    background: '#FFFFFF',
+                    primaryTextColor: '#000000',
+                    lineColor: '#000000',
+                    actorBkg: '#E0F2F7',
+                    actorBorder: '#000000',
+                    noteBkg: '#FFFDE7',
+                    noteTextColor: '#000000',
+                    labelBoxBkgColor: '#E1F5FE',
+                    labelTextColor: '#000000',
                 });
             }
 
@@ -903,7 +919,7 @@
                 const currentEditorValue = codeEditor.getValue();
                 const themePlaceholderRegex = /Current theme: [\w\s()#]+/;
                 if (currentEditorValue.trim() === "" || themePlaceholderRegex.test(currentEditorValue)) {
-                    let newDefaultCode = APP_CONFIG.defaultDiagramCode.replace("Graphix Studio", APP_CONFIG.appName);
+                    let newDefaultCode = APP_CONFIG.defaultDiagramCode.replace("Welcome to Graphix Studio!", `Welcome to ${APP_CONFIG.appName}!`);
                     newDefaultCode = newDefaultCode.replace(themePlaceholderRegex, `Current theme: ${themeNameForDefaultText}`);
                     codeEditor.setValue(newDefaultCode);
                 }
@@ -1038,13 +1054,12 @@
                         }
                     }
                 } else if (modalElement === exportOptionsModal) {
-                    // Enable/disable download button based on diagram rendered state
                     const diagramRendered = mermaidOutput.querySelector('svg') !== null;
                     exportOptionCheckboxes.forEach(checkbox => {
                         checkbox.disabled = !diagramRendered;
-                        checkbox.checked = false; // Reset checkboxes on open
+                        checkbox.checked = false;
                     });
-                    downloadSelectedExportsButton.disabled = true; // Disable until an option is selected
+                    downloadSelectedExportsButton.disabled = true;
                 }
 
 
@@ -1078,19 +1093,16 @@
         setupModal(showHelpButton, helpModal, closeHelpModalButton);
         setupModal(showAboutButton, aboutModal, closeAboutModalButton);
         setupModal(showAdvancedThemeEditorButton, advancedThemeModal, closeAdvancedThemeModalButton);
-        setupModal(showExportOptionsModalButton, exportOptionsModal, closeExportOptionsModalButton); // Setup for new export modal
+        setupModal(showExportOptionsModalButton, exportOptionsModal, closeExportOptionsModalButton);
 
 
-        // Event listener for export option checkboxes
         exportOptionCheckboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
-                // Enable "Download Selected" button if any checkbox is checked
                 const anyChecked = Array.from(exportOptionCheckboxes).some(cb => cb.checked);
                 downloadSelectedExportsButton.disabled = !anyChecked;
             });
         });
 
-        // Event listener for "Download Selected" button in export modal
         if (downloadSelectedExportsButton) {
             downloadSelectedExportsButton.addEventListener('click', async () => {
                 const selectedOptions = Array.from(exportOptionCheckboxes)
@@ -1110,7 +1122,7 @@
 
                 let allDownloadsSuccessful = true;
                 const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
-                const baseFileName = `graphix-studio-diagram-${timestamp}`;
+                const baseFileName = `archiviz-diagram-${timestamp}`;
 
                 for (const option of selectedOptions) {
                     let success = false;
@@ -1146,8 +1158,7 @@
                     showNotification("Some downloads failed. Check console for details.", 5000);
                 }
 
-                // Close modal and reset checkboxes
-                closeExportOptionsModalButton.click(); // Simulate click to close modal
+                closeExportOptionsModalButton.click();
                 exportOptionCheckboxes.forEach(checkbox => checkbox.checked = false);
                 downloadSelectedExportsButton.disabled = true;
             });
@@ -1177,7 +1188,7 @@
         const helpExamples = {
             sequence: `sequenceDiagram\n    autonumber\n    actor User\n    participant Frontend\n    participant Backend API\n    User->>Frontend: Clicks "Submit Order"\n    Frontend->>Backend API: POST /orders {data}\n    activate Backend API\n    Backend API->>Backend API: Validate data\n    Backend API->>Database: Save order\n    Database-->>Backend API: Order Confirmed (ID: 123)\n    deactivate Backend API\n    Backend API-->>Frontend: {orderId: 123, status: "success"}\n    Frontend-->>User: Shows "Order Successful!" message\n    Note right of User: User is happy!`,
             flowchart: `graph TD\n    A[Start] --> B{Is it sunny?};\n    B -- Yes --> C[Go to beach];\n    B -- No --> D[Read a book];\n    C --> E[End];\n    D --> E;`,
-            class: `classDiagram\n    Animal <|-- Duck\n    Animal <|-- Fish\n    Animal <|-- Zebra\n    Animal : +int age\n    Animal : +String gender\n    Animal: +isMammal()\n    Animal: +mate()\n    class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n    }\n    class Dog{\n      +String breed\n      +bark()\n    }`,
+            class: `classDiagram\n    Animal <|-- Duck\n    Animal <|-- Fish\n    Animal <|-- Zebra\n    Animal : +int age\n    Animal : +String gender\n    Animal: +isMammal()\n    Animal: +mate()\n    class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n}\n    class Dog{\n      +String breed\n      +bark()\n    }`,
             gantt: `gantt\n    title Project Timeline Example\n    dateFormat  YYYY-MM-DD\n    section Planning Phase\n    Market Research     :a1, 2024-01-01, 7d\n    Define Requirements :after a1, 5d\n    Feature X Dev       :crit, active, 2024-01-15, 10d\n    Feature Y Dev       :2024-01-18, 12d\n    Integration         :after Feature X Dev, 5d\n    section Testing\n    QA Testing          :after Integration, 7d`,
             c4: `C4Context\n    title System Context diagram for Internet Banking System\n    Person(customer, "Banking Customer", "A customer of the bank, with a bank account.")\n    System(internetBanking, "Internet Banking System", "Allows customers to view their bank accounts and make payments.")\n    System_Ext(mainframe, "Mainframe Banking System", "Stores all of the core banking information.")\n    System_Ext(email, "E-mail System", "The internal Microsoft Exchange e-mail system.")\n    Rel(customer, internetBanking, "Uses")\n    Rel(internetBanking, mainframe, "Uses", "HTTPS")\n    Rel_Back(customer, email, "Sends e-mails to")`,
             state: `stateDiagram-v2\n    [*] --> Still\n    Still --> [*]\n    Still --> Moving: EvtMovement\n    Moving --> Still: EvtStopped\n    Moving --> Crash: EvtCrash\n    Crash --> [*]`,
@@ -1224,10 +1235,7 @@
         }
 
         function updateDownloadButtonsState(enable) {
-            // These individual buttons no longer exist on the main dropdown,
-            // but the copyImageButton still needs to be enabled/disabled.
             if (copyImageButton) copyImageButton.disabled = !enable;
-            // The export options modal's button state is managed by its checkboxes
         }
         updateDownloadButtonsState(false);
 
@@ -1335,7 +1343,7 @@
             const comment = `%% This code was created via ${APP_CONFIG.appName}\n%% Timestamp: ${new Date().toISOString()}\n\n`;
             code = comment + code;
             const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
-            const codeFileName = `${baseFileName}-code.graphix`;
+            const codeFileName = `${baseFileName}-code.archiviz`; // Changed from .graphix
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = codeFileName;
@@ -1344,21 +1352,22 @@
             return true;
         }
 
-        if (downloadDiagramCodeButton && codeEditor) {
-            downloadDiagramCodeButton.addEventListener('click', () => {
-                const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
-                const baseName = `graphix-studio-diagram-${timestamp}`;
-                if (downloadCurrentDiagramCode(baseName)) {
-                     showNotification("Diagram code (.graphix) downloaded!");
-                }
-                if (topLeftDropdown) topLeftDropdown.classList.remove('show');
-                setTimeout(() => { topLeftDropdown.style.display = 'none'; }, 200);
-            });
-        }
+        // Removed downloadDiagramCodeButton event listener as the button itself is removed from HTML
+        // if (downloadDiagramCodeButton && codeEditor) {
+        //     downloadDiagramCodeButton.addEventListener('click', () => {
+        //         const timestamp = new Date().toISOString().slice(0,19).replace(/:/g,'-');
+        //         const baseName = `archiviz-diagram-${timestamp}`;
+        //         if (downloadCurrentDiagramCode(baseName)) {
+        //              showNotification("Diagram code (.archiviz) downloaded!");
+        //         }
+        //         if (topLeftDropdown) topLeftDropdown.classList.remove('show');
+        //         setTimeout(() => { topLeftDropdown.style.display = 'none'; }, 200);
+        //     });
+        // }
 
         if (importDiagramButton && codeEditor) {
             const fileInput = document.createElement('input');
-            fileInput.type = 'file'; fileInput.accept = '.graphix,.txt,.mmd,.mermaid';
+            fileInput.type = 'file'; fileInput.accept = '.archiviz,.txt,.mmd,.mermaid'; // Changed from .graphix
             fileInput.style.display = 'none';
             document.body.appendChild(fileInput);
             importDiagramButton.addEventListener('click', () => {
@@ -1372,7 +1381,7 @@
                     const reader = new FileReader();
                     reader.onload = (e) => {
                         let importedCode = e.target.result;
-                        const commentRegex = /^%% This code was created via Graphix Studio.*\n%% Timestamp: .*\n\n/m;
+                        const commentRegex = /^%% This code was created via Archiviz.*\n%% Timestamp: .*\n\n/m;
                         importedCode = importedCode.replace(commentRegex, '');
                         codeEditor.setValue(importedCode);
                         renderDiagram();
@@ -1414,7 +1423,7 @@
             if (!svgData) return null;
             const { element: svgElement, width, height } = svgData;
             const svgXml = new XMLSerializer().serializeToString(svgElement);
-            const baseFileName = `graphix-studio-diagram-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}`;
+            const baseFileName = `archiviz-diagram-${new Date().toISOString().slice(0,19).replace(/:/g,'-')}`;
 
 
             if (format === 'svg') {
@@ -1557,6 +1566,7 @@
         if (codeEditor) {
             codeEditor.on('change', () => {
                 codeChangedSinceLastRender = true;
+                localStorage.setItem('graphixStudioLastDiagramCode', codeEditor.getValue());
             });
              codeEditor.on('keydown', (cm, e) => {
                 if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -1598,7 +1608,7 @@
         let isResizing = false;
         let panelWidthsFractions = { left: 0.5, right: 0.5 };
         function loadPanelWidths() {
-            try { const savedWidths = localStorage.getItem('graphixStudioPanelWidths_v1'); if (savedWidths) { const parsedWidths = JSON.parse(savedWidths); if (typeof parsedWidths.left === 'number' && typeof parsedWidths.right === 'number' && parsedWidths.left >= 0.1 && parsedWidths.right >= 0.1 && (parsedWidths.left + parsedWidths.right) > 0.9 && (parsedB.left + parsedWidths.right) < 1.1 ) { panelWidthsFractions = parsedWidths; } else { panelWidthsFractions = { left: 0.5, right: 0.5 }; } } } catch (e) { console.error("Error loading panel widths:", e); panelWidthsFractions = { left: 0.5, right: 0.5 }; } applyPanelWidths();
+            try { const savedWidths = localStorage.getItem('graphixStudioPanelWidths_v1'); if (savedWidths) { const parsedWidths = JSON.parse(savedWidths); if (typeof parsedWidths.left === 'number' && typeof parsedWidths.right === 'number' && parsedWidths.left >= 0.1 && parsedWidths.right >= 0.1 && (parsedWidths.left + parsedWidths.right) > 0.9 && (parsedWidths.left + parsedWidths.right) < 1.1 ) { panelWidthsFractions = parsedWidths; } else { panelWidthsFractions = { left: 0.5, right: 0.5 }; } } } catch (e) { console.error("Error loading panel widths:", e); panelWidthsFractions = { left: 0.5, right: 0.5 }; } applyPanelWidths();
         }
         function savePanelWidths() {
             try { localStorage.setItem('graphixStudioPanelWidths_v1', JSON.stringify(panelWidthsFractions)); } catch (e) { console.error("Error saving panel widths:", e); }
@@ -1620,8 +1630,12 @@
             });
         }
 
-        if (codeEditor.getValue().trim()) { renderDiagram(false); }
-        else if (mermaidOutput) { mermaidOutput.innerHTML = '<p class="text-gray-400 text-center mt-10">Enter diagram code in the left panel and click "Render Diagram".</p>'; }
+        if (savedCode) {
+            renderDiagram(false);
+        } else {
+            renderDiagram(false);
+        }
+
         if (themeSelector) themeSelector.value = currentSelectedTheme;
         if (currentSelectedTheme === 'custom' && showAdvancedThemeEditorButton) {
             showAdvancedThemeEditorButton.classList.remove('hidden');

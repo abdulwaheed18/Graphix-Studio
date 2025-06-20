@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archiviz - Diagram Examples</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .diagram-section {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .diagram-section h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .diagram-section pre {
+            background-color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .mermaid-output-wrapper {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            background-color: #f7fafc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+            overflow-x: auto;
+            overflow-y: auto;
+        }
+        .mermaid-output-wrapper svg {
+            display: block; /* Ensure SVG takes its own space */
+            max-width: 100%; /* Make SVG responsive within its container */
+            height: auto; /* Maintain aspect ratio */
+        }
+        .copy-button {
+            @apply bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md shadow-sm transition duration-150 ease-in-out text-sm;
+            margin-top: 0.5rem;
+        }
+        .back-button {
+            @apply inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500;
+            margin-bottom: 2rem;
+        }
+        footer {
+            background-color: #374151;
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+        /* Notification Toast for this page */
+        #notificationToastExamples {
+            position: fixed; bottom: 20px; left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            background-color: #2d3748; /* Dark background */
+            color: white; /* White text */
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 100;
+            opacity: 0; transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            visibility: hidden;
+        }
+        #notificationToastExamples.show {
+            opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<header class="bg-indigo-700 text-white p-6 shadow-md">
+    <div class="container flex items-center justify-between">
+        <h1 class="3xl font-bold">Archiviz - Diagram Examples</h1>
+        <a href="/" class="back-button">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Editor
+        </a>
+    </div>
+</header>
+
+<main class="flex-grow container mt-8">
+    <p class="text-lg text-gray-700 mb-8">
+        Explore a comprehensive collection of diagram examples generated using Mermaid.js. These examples showcase various capabilities of Archiviz, from simple flowcharts to complex system architectures.
+    </p>
+
+    <!-- Product Showcase 1: Online Order Processing Flow -->
+    <div class="diagram-section" id="example-online-order">
+        <h3>Product Showcase: Online Order Processing Flow</h3>
+        <p>
+            This sequence diagram illustrates the typical flow of an online order, from a user placing an order to the order being fulfilled. It highlights interactions between the customer, web application, payment gateway, inventory, and shipping services.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-online-order" class="mermaid"></div>
+        </div>
+        <pre><code id="code-online-order"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-online-order')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Product Showcase 2: Software Development Lifecycle (SDLC) -->
+    <div class="diagram-section" id="example-sdlc">
+        <h3>Product Showcase: Software Development Lifecycle (SDLC)</h3>
+        <p>
+            A comprehensive flowchart illustrating the standard phases of a Software Development Lifecycle (SDLC). This visualizes how different stages are interconnected, from planning to deployment and maintenance.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-sdlc" class="mermaid"></div>
+        </div>
+        <pre><code id="code-sdlc"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-sdlc')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Sequence Diagram -->
+    <div class="diagram-section" id="example-sequence">
+        <h3>Sequence Diagram: User Authentication</h3>
+        <p>
+            This diagram shows the sequence of messages exchanged between different participants for a user login process.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-sequence" class="mermaid"></div>
+        </div>
+        <pre><code id="code-sequence"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-sequence')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Flowchart -->
+    <div class="diagram-section" id="example-flowchart">
+        <h3>Flowchart: Decision Making</h3>
+        <p>
+            A simple flowchart illustrating a basic decision-making process.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-flowchart" class="mermaid"></div>
+        </div>
+        <pre><code id="code-flowchart"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-flowchart')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Class Diagram -->
+    <div class="diagram-section" id="example-class">
+        <h3>Class Diagram: Animal Hierarchy</h3>
+        <p>
+            This diagram defines a simple class hierarchy for animals, showcasing inheritance and methods.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-class" class="mermaid"></div>
+        </div>
+        <pre><code id="code-class"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-class')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Gantt Chart -->
+    <div class="diagram-section" id="example-gantt">
+        <h3>Gantt Chart: Project Schedule</h3>
+        <p>
+            Visualize a simple project timeline with tasks and their dependencies using a Gantt chart.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-gantt" class="mermaid"></div>
+        </div>
+        <pre><code id="code-gantt"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-gantt')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: C4 Context Diagram -->
+    <div class="diagram-section" id="example-c4">
+        <h3>C4 Model: System Context</h3>
+        <p>
+            A high-level system context diagram from the C4 Model, showing interactions between users and external systems.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-c4" class="mermaid"></div>
+        </div>
+        <pre><code id="code-c4"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-c4')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: State Diagram -->
+    <div class="diagram-section" id="example-state">
+        <h3>State Diagram: Object Lifecycle</h3>
+        <p>
+            Illustrates the different states an object can be in and the transitions between them.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-state" class="mermaid"></div>
+        </div>
+        <pre><code id="code-state"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-state')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Pie Chart -->
+    <div class="diagram-section" id="example-pie">
+        <h3>Pie Chart: Data Distribution</h3>
+        <p>
+            A simple pie chart to show the distribution of different categories.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-pie" class="mermaid"></div>
+        </div>
+        <pre><code id="code-pie"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-pie')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: Entity Relationship Diagram -->
+    <div class="diagram-section" id="example-er">
+        <h3>Entity Relationship Diagram: Customer Order System</h3>
+        <p>
+            Models the relationships between entities in a customer order system.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-er" class="mermaid"></div>
+        </div>
+        <pre><code id="code-er"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-er')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+    <!-- Existing Example: User Journey Diagram -->
+    <div class="diagram-section" id="example-journey">
+        <h3>User Journey Diagram: Daily Routine</h3>
+        <p>
+            Visualizes the steps a user takes to complete a specific goal, highlighting their experience.
+        </p>
+        <div class="mermaid-output-wrapper">
+            <div id="mermaidOutput-journey" class="mermaid"></div>
+        </div>
+        <pre><code id="code-journey"></code></pre>
+        <button class="copy-button" onclick="copyCode('code-journey')">
+            <i class="fas fa-copy mr-2"></i> Copy Code
+        </button>
+    </div>
+
+</main>
+
+<footer class="flex-shrink-0">
+    <p>&copy; <span id="currentYearFooter"></span> Archiviz. Architectural Visualization Solutions.</p>
+</footer>
+
+<div id="notificationToastExamples" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-gray-800 text-white py-3 px-6 rounded-md shadow-lg opacity-0 transition-all duration-300 ease-in-out visibility-hidden">
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const currentYearSpan = document.getElementById('currentYearFooter');
+        if (currentYearSpan) {
+            currentYearSpan.textContent = new Date().getFullYear();
+        }
+
+        const notificationToast = document.getElementById('notificationToastExamples');
+
+        function showNotification(message, duration = 3000) {
+            if (!notificationToast) return;
+            notificationToast.textContent = message;
+            notificationToast.classList.remove('opacity-0', 'visibility-hidden');
+            notificationToast.style.transform = 'translateX(-50%) translateY(0)';
+            notificationToast.classList.add('show');
+            setTimeout(() => {
+                notificationToast.classList.remove('show');
+                notificationToast.style.transform = 'translateX(-50%) translateY(100%)';
+                setTimeout(() => { notificationToast.classList.add('opacity-0', 'visibility-hidden'); }, 300);
+            }, duration);
+        }
+
+        const diagramCodes = {
+            'online-order': `sequenceDiagram
+participant Customer
+participant WebApp as "Web Application"
+participant PaymentGW as "Payment Gateway"
+participant InventoryS as "Inventory Service"
+participant ShippingS as "Shipping Service"
+participant Database
+
+Customer->>WebApp: Place Order (Items, Address)
+activate WebApp
+WebApp->>PaymentGW: Process Payment (Card Info, Amount)
+activate PaymentGW
+PaymentGW-->>WebApp: Payment Success/Failure
+deactivate PaymentGW
+
+alt Payment Successful
+    WebApp->>InventoryS: Deduct Stock (Item IDs)
+    activate InventoryS
+    InventoryS-->>WebApp: Stock Deducted Confirmation
+    deactivate InventoryS
+
+    WebApp->>Database: Save Order (Order Details, Payment ID)
+    activate Database
+    Database-->>WebApp: Order Saved (Order ID)
+    deactivate Database
+
+    WebApp->>ShippingS: Create Shipment (Order ID, Address, Items)
+    activate ShippingS
+    ShippingS-->>WebApp: Shipment ID
+    deactivate ShippingS
+
+    WebApp-->>Customer: Order Confirmation (Order ID)
+else Payment Failed
+    WebApp-->>Customer: Payment Failed Notification
+end
+
+Customer->>WebApp: View Order Status (Order ID)
+WebApp->>Database: Retrieve Order Details (Order ID)
+activate Database
+Database-->>WebApp: Order Details
+deactivate Database
+WebApp-->>Customer: Display Order Status`,
+
+            'sdlc': `graph TD
+A[Requirement Analysis] --> B{Design};
+B -- System Design --> C(Development);
+B -- Database Design --> C;
+C --> D[Testing];
+D -- Pass --> E[Deployment];
+D -- Fail --> C;
+E --> F[Maintenance];
+F -- Updates/Fixes --> A;
+
+subgraph Phases
+    A
+    B
+    C
+    D
+    E
+    F
+end`,
+
+            'sequence': `sequenceDiagram
+autonumber
+actor User
+participant Browser
+participant WebServer
+participant AuthService as "Auth Service"
+participant Database
+
+User->>Browser: Enter credentials
+Browser->>WebServer: POST /login {username, password}
+activate WebServer
+WebServer->>AuthService: Verify credentials
+activate AuthService
+AuthService->>Database: Query user record
+activate Database
+Database-->>AuthService: User data
+deactivate Database
+AuthService-->>WebServer: Auth result (token/error)
+deactivate AuthService
+alt Authentication Successful
+    WebServer-->>Browser: Redirect to Dashboard (with token)
+    Browser->>User: Display dashboard
+else Authentication Failed
+    WebServer-->>Browser: Display login error
+    Browser->>User: Show error message
+end
+deactivate WebServer`,
+
+            'flowchart': `graph TD
+A[Start] --> B{Need Coffee?};
+B -- Yes --> C[Make Coffee];
+B -- No --> D[Continue Working];
+C --> E[Enjoy Coffee];
+E --> D;
+D --> F[End];`,
+
+            'class': `classDiagram
+Animal <|-- Duck
+Animal <|-- Fish
+Animal <|-- Zebra
+Animal : +int age
+Animal : +String gender
+Animal: +isMammal()
+Animal: +mate()
+class Duck{\n        +String beakColor\n        +swim()\n        +quack()\n    }\n    class Fish{\n        -int sizeInFt\n        -canEat()\n    }\n    class Zebra{\n        +bool is_wild\n        +run()\n    }\n    class Dog{\n      +String breed\n      +bark()\n    }`,
+
+            'gantt': `gantt
+title Software Release Schedule
+dateFormat  YYYY-MM-DD
+section Development
+Design Documents :des1, 2024-06-20, 5d
+Backend Development :back1, after des1, 10d
+Frontend Development :front1, after des1, 8d
+section Testing
+Unit Testing :unit1, after back1, 3d
+Integration Testing :int1, after front1, 5d
+section Deployment
+Prepare Release :rel1, after int1, 2d
+Go Live :live1, after rel1, 1d`,
+
+            'c4': `C4Context
+title User Management System Context
+Person(user, "System User", "A user who interacts with the system.")
+System(userManagement, "User Management System", "Manages user accounts, profiles, and permissions.")
+System_Ext(identityProvider, "External Identity Provider", "Provides authentication services (e.g., OAuth2, LDAP).")
+System_Ext(notificationService, "Notification Service", "Sends email and SMS notifications.")
+
+Rel(user, userManagement, "Uses", "Web/API")
+Rel(userManagement, identityProvider, "Authenticates via", "OAuth2 / SAML")
+Rel(userManagement, notificationService, "Sends notifications via", "API")
+Rel_Back(notificationService, user, "Receives notifications from")`,
+
+            'state': `stateDiagram-v2
+state "Idle" as idleState
+state "Processing" as processingState
+state "Error" as errorState
+
+idleState --> processingState: requestReceived
+processingState --> idleState: processingComplete
+processingState --> errorState: processingFailed
+errorState --> idleState: resetSystem`,
+
+            'pie': `pie title Sales by Region
+"North America" : 42.5
+"Europe" : 30.1
+"Asia" : 20.3
+"South America" : 5.0
+"Africa" : 2.1`,
+
+            'er': `erDiagram
+CUSTOMER ||--o{ ORDER : places
+ORDER ||--|{ LINE_ITEM : contains
+PRODUCT }|--o{ LINE_ITEM : constitutes
+CUSTOMER {
+    VARCHAR(50) customer_id PK
+    VARCHAR(100) name
+    VARCHAR(100) email
+}
+ORDER {
+    VARCHAR(50) order_id PK
+    VARCHAR(50) customer_id FK
+    DATE order_date
+    DECIMAL(10,2) total_amount
+}
+PRODUCT {
+    VARCHAR(50) product_id PK
+    VARCHAR(100) name
+    DECIMAL(10,2) price
+    INT stock
+}
+LINE_ITEM {
+    VARCHAR(50) line_item_id PK
+    VARCHAR(50) order_id FK
+    VARCHAR(50) product_id FK
+    INT quantity
+    DECIMAL(10,2) subtotal
+}`,
+
+            'journey': `journey
+title Customer Onboarding Process
+section Account Creation
+  Sign up: 5: New User
+  Verify Email: 3: New User
+  Complete Profile: 8: New User
+section First Interaction
+  Explore Features: 10: Curious User
+  Make First Purchase: 15: Engaged User
+section Post-Purchase
+  Receive Order: 7: Satisfied User
+  Provide Feedback: 5: Engaged User`
+        };
+
+        // Initialize Mermaid for this page
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'default',
+            securityLevel: 'loose',
+            fontFamily: '"Inter", sans-serif',
+            themeVariables: {
+                lineColor: '#000000', // Black lines
+                primaryColor: '#000000', // Black primary color
+                primaryTextColor: '#000000', // Black primary text color
+                background: '#FFFFFF' // White background
+            }
+        });
+
+        // Function to render a specific diagram
+        const renderSpecificDiagram = async (diagramId, code) => {
+            const outputDiv = document.getElementById(`mermaidOutput-${diagramId}`);
+            if (!outputDiv) {
+                console.error(`Output div not found for ${diagramId}`);
+                return;
+            }
+            outputDiv.innerHTML = ''; // Clear previous content
+
+            // Render the diagram
+            try {
+                await mermaid.parse(code);
+                const { svg, bindFunctions } = await mermaid.render(`mermaid-graph-${diagramId}-${Date.now()}`, code);
+                outputDiv.innerHTML = svg;
+                if (bindFunctions) bindFunctions(outputDiv);
+            } catch (error) {
+                console.error(`Error rendering diagram ${diagramId}:`, error);
+                outputDiv.innerHTML = `<p class="text-red-500 text-center mt-10">Error rendering diagram: ${error.message || 'Invalid syntax.'}</p>`;
+            }
+        };
+
+        // Populate code blocks and render diagrams on load
+        for (const id in diagramCodes) {
+            if (diagramCodes.hasOwnProperty(id)) {
+                const codeBlock = document.getElementById(`code-${id}`);
+                if (codeBlock) {
+                    codeBlock.textContent = diagramCodes[id];
+                }
+                renderSpecificDiagram(id, diagramCodes[id]);
+            }
+        }
+
+        // Copy code to clipboard function
+        window.copyCode = function(codeId) {
+            const codeElement = document.getElementById(codeId);
+            if (codeElement) {
+                const codeToCopy = codeElement.textContent;
+                try {
+                    const tempTextArea = document.createElement('textarea');
+                    tempTextArea.value = codeToCopy;
+                    document.body.appendChild(tempTextArea);
+                    tempTextArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(tempTextArea);
+                    showNotification('Code copied to clipboard!');
+                } catch (err) {
+                    console.error('Failed to copy code: ', err);
+                    showNotification('Failed to copy code. Please try manually.', 3000);
+                }
+            }
+        };
+    });
+</script>
+</body>
+</html>
